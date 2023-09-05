@@ -1,3 +1,10 @@
+// Copyright 2023 Marsh J. Ray
+//
+// Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
+// http://opensource.org/licenses/MIT>, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
 #![allow(dead_code)] //? TODO for development
 #![allow(unused_mut)] //? TODO for development
 #![allow(unused_variables)] //? TODO for development
@@ -9,8 +16,8 @@ use anyhow::*;
 use serde::{Deserialize, Serialize};
 //use thiserror::Error;
 
-use crate::source_bytes::{ByteOrEof, SourceByteReadResult};
 use crate::maybe_match;
+use crate::source_bytes::{ByteOrEof, SourceByteReadResult};
 
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
@@ -60,7 +67,7 @@ pub enum CharResult {
     Char(char),
     Eol,
     Eof,
-    CharError(CharError)
+    CharError(CharError),
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -81,22 +88,46 @@ impl SourceCharReadResult {
 impl SourceCharReadResult {
     /// Returns if the result is a valid Eol.
     pub fn is_eol(&self) -> bool {
-        matches!(*self, SourceCharReadResult { char_result: CharResult::Eol, .. })
+        matches!(
+            *self,
+            SourceCharReadResult {
+                char_result: CharResult::Eol,
+                ..
+            }
+        )
     }
 
     /// Returns if the result is a valid Eof.
     pub fn is_eof(&self) -> bool {
-        matches!(*self, SourceCharReadResult { char_result: CharResult::Eof, .. })
+        matches!(
+            *self,
+            SourceCharReadResult {
+                char_result: CharResult::Eof,
+                ..
+            }
+        )
     }
 
     /// Returns if the result is an error.
     pub fn is_error(&self) -> bool {
-        matches!(*self, SourceCharReadResult { char_result: CharResult::CharError(_), .. })
+        matches!(
+            *self,
+            SourceCharReadResult {
+                char_result: CharResult::CharError(_),
+                ..
+            }
+        )
     }
 
     /// Returns if the result is a char.
     pub fn is_char(&self) -> bool {
-        matches!(*self, SourceCharReadResult { char_result: CharResult::Char(ch), .. })
+        matches!(
+            *self,
+            SourceCharReadResult {
+                char_result: CharResult::Char(ch),
+                ..
+            }
+        )
     }
 
     /// Returns if the result is a char or a valid Eol.
@@ -108,7 +139,7 @@ impl SourceCharReadResult {
     pub fn opt_char(&self) -> Option<char> {
         maybe_match!(*self, SourceCharReadResult { char_result: CharResult::Char(ch), .. } => ch)
     }
-    
+
     /// Returns the char if the SourceCharReadResult contains one. Otherwise returns
     /// NUL (0 as char).
     pub fn char_or_nul(&self) -> char {
@@ -139,8 +170,7 @@ pub fn source_chars(
             // Begin a new char
             utf8_buf_len = 0;
             source_byte_read_result.file_offset
-        }
-            ..=source_byte_read_result.file_offset;
+        }..=source_byte_read_result.file_offset;
 
         need_more_bytes_for_this_char = false;
 
@@ -229,7 +259,7 @@ pub fn source_chars(
                         };
                         source_char_read_result.loc.char_n.inc();
                     }
-                    
+
                     yield SourceCharReadResult {
                         char_result: CharResult::Eof,
                         ..source_char_read_result.clone()
