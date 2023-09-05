@@ -1,0 +1,16 @@
+---
+source: src/source_bytes.rs
+info:
+  - 97
+input_file: src/test_data/source_bytes/one_char_a.bin
+---
+[
+  SourceByteReadResult(
+    file_offset: 0,
+    byte_or_eof: Byte(97),
+  ),
+  SourceByteReadResult(
+    file_offset: 1,
+    byte_or_eof: Eof,
+  ),
+]

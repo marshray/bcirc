@@ -1,0 +1,250 @@
+---
+source: src/lexer.rs
+input_file: src/test_data/lexer/basic_tokens.txt
+---
+[
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 0,
+        end: 0,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 0,
+        end: 0,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: PunctuationSingleChar('['),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 1,
+        end: 1,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(2),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 1,
+        end: 1,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(2),
+    )),
+    token: PunctuationSingleChar(']'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 3,
+        end: 3,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(4),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 3,
+        end: 3,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(4),
+    )),
+    token: PunctuationSingleChar('{'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 5,
+        end: 5,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(6),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 5,
+        end: 5,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(6),
+    )),
+    token: PunctuationSingleChar('}'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 8,
+        end: 8,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 8,
+        end: 8,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: PunctuationSingleChar('('),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 9,
+        end: 9,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(2),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 9,
+        end: 9,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(2),
+    )),
+    token: PunctuationSingleChar(')'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 12,
+        end: 12,
+      ),
+      line_n: LineNumberOneBased(3),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 12,
+        end: 12,
+      ),
+      line_n: LineNumberOneBased(3),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: PunctuationSingleChar('-'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 13,
+        end: 13,
+      ),
+      line_n: LineNumberOneBased(3),
+      char_n: CharNumberOneBased(2),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 13,
+        end: 13,
+      ),
+      line_n: LineNumberOneBased(3),
+      char_n: CharNumberOneBased(2),
+    )),
+    token: PunctuationSingleChar('!'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 16,
+        end: 16,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 16,
+        end: 16,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: PunctuationSingleChar('^'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 17,
+        end: 17,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(2),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 17,
+        end: 17,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(2),
+    )),
+    token: PunctuationSingleChar('&'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 18,
+        end: 18,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(3),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 18,
+        end: 18,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(3),
+    )),
+    token: PunctuationSingleChar('*'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 21,
+        end: 21,
+      ),
+      line_n: LineNumberOneBased(5),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 21,
+        end: 21,
+      ),
+      line_n: LineNumberOneBased(5),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: PunctuationSingleChar(','),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 23,
+        end: 23,
+      ),
+      line_n: LineNumberOneBased(5),
+      char_n: CharNumberOneBased(3),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 23,
+        end: 23,
+      ),
+      line_n: LineNumberOneBased(5),
+      char_n: CharNumberOneBased(3),
+    )),
+    token: PunctuationSingleChar(';'),
+  )),
+  Eod(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 26,
+        end: 26,
+      ),
+      line_n: LineNumberOneBased(6),
+      char_n: CharNumberOneBased(1),
+    ),
+  ),
+]

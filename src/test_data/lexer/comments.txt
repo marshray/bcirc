@@ -1,0 +1,19 @@
+1 // line Comment
+2
+
+3 /* block comment */ 4
+
+5 /*
+multiline block comment
+*/ 6
+
+7 // Tricky block comment negates line comment
+/*
+// */ 8
+
+// Tricky line comment
+9 // /*
+10
+
+// Should be two single char tokens
+/ *

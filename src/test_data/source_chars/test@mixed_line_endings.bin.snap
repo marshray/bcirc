@@ -1,0 +1,149 @@
+---
+source: src/source_chars.rs
+input_file: src/test_data/source_chars/mixed_line_endings.bin
+---
+[
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 0,
+        end: 0,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Char('a'),
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 1,
+        end: 1,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(2),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 2,
+        end: 2,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Char('b'),
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 3,
+        end: 3,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(2),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 5,
+        end: 5,
+      ),
+      line_n: LineNumberOneBased(3),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Char('c'),
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 6,
+        end: 6,
+      ),
+      line_n: LineNumberOneBased(3),
+      char_n: CharNumberOneBased(2),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 7,
+        end: 7,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 9,
+        end: 9,
+      ),
+      line_n: LineNumberOneBased(5),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Char('d'),
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 10,
+        end: 10,
+      ),
+      line_n: LineNumberOneBased(5),
+      char_n: CharNumberOneBased(2),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 11,
+        end: 11,
+      ),
+      line_n: LineNumberOneBased(6),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 12,
+        end: 12,
+      ),
+      line_n: LineNumberOneBased(7),
+      char_n: CharNumberOneBased(1),
+    ),
+    char_result: Char('e'),
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 13,
+        end: 13,
+      ),
+      line_n: LineNumberOneBased(7),
+      char_n: CharNumberOneBased(2),
+    ),
+    char_result: Eol,
+  ),
+  SourceCharReadResult(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 13,
+        end: 13,
+      ),
+      line_n: LineNumberOneBased(7),
+      char_n: CharNumberOneBased(3),
+    ),
+    char_result: Eof,
+  ),
+]

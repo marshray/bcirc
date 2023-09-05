@@ -1,0 +1,11 @@
+---
+source: src/source_bytes.rs
+info: []
+input_file: src/test_data/source_bytes/empty_file.bin
+---
+[
+  SourceByteReadResult(
+    file_offset: 0,
+    byte_or_eof: Eof,
+  ),
+]

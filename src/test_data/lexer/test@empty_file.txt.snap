@@ -1,0 +1,16 @@
+---
+source: src/lexer.rs
+input_file: src/test_data/lexer/empty_file.txt
+---
+[
+  Eod(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 0,
+        end: 0,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(1),
+    ),
+  ),
+]

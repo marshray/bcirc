@@ -1,0 +1,232 @@
+---
+source: src/lexer.rs
+input_file: src/test_data/lexer/comments.txt
+---
+[
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 0,
+        end: 0,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 0,
+        end: 0,
+      ),
+      line_n: LineNumberOneBased(1),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: LiteralInteger(I128(1)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 19,
+        end: 19,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 19,
+        end: 19,
+      ),
+      line_n: LineNumberOneBased(2),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: LiteralInteger(I128(2)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 24,
+        end: 24,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 24,
+        end: 24,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: LiteralInteger(I128(3)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 46,
+        end: 46,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(23),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 46,
+        end: 46,
+      ),
+      line_n: LineNumberOneBased(4),
+      char_n: CharNumberOneBased(23),
+    )),
+    token: LiteralInteger(I128(4)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 51,
+        end: 51,
+      ),
+      line_n: LineNumberOneBased(6),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 51,
+        end: 51,
+      ),
+      line_n: LineNumberOneBased(6),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: LiteralInteger(I128(5)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 85,
+        end: 85,
+      ),
+      line_n: LineNumberOneBased(8),
+      char_n: CharNumberOneBased(4),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 85,
+        end: 85,
+      ),
+      line_n: LineNumberOneBased(8),
+      char_n: CharNumberOneBased(4),
+    )),
+    token: LiteralInteger(I128(6)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 90,
+        end: 90,
+      ),
+      line_n: LineNumberOneBased(10),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 90,
+        end: 90,
+      ),
+      line_n: LineNumberOneBased(10),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: LiteralInteger(I128(7)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 148,
+        end: 148,
+      ),
+      line_n: LineNumberOneBased(12),
+      char_n: CharNumberOneBased(7),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 148,
+        end: 148,
+      ),
+      line_n: LineNumberOneBased(12),
+      char_n: CharNumberOneBased(7),
+    )),
+    token: LiteralInteger(I128(8)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 177,
+        end: 177,
+      ),
+      line_n: LineNumberOneBased(15),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 177,
+        end: 177,
+      ),
+      line_n: LineNumberOneBased(15),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: LiteralInteger(I128(9)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 186,
+        end: 186,
+      ),
+      line_n: LineNumberOneBased(16),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 187,
+        end: 187,
+      ),
+      line_n: LineNumberOneBased(16),
+      char_n: CharNumberOneBased(2),
+    )),
+    token: LiteralInteger(I128(10)),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 229,
+        end: 229,
+      ),
+      line_n: LineNumberOneBased(19),
+      char_n: CharNumberOneBased(1),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 229,
+        end: 229,
+      ),
+      line_n: LineNumberOneBased(19),
+      char_n: CharNumberOneBased(1),
+    )),
+    token: PunctuationSingleChar('/'),
+  )),
+  Token(TokenInfo(
+    span: (CharLoc(
+      file_offset: RangeInclusive(
+        start: 231,
+        end: 231,
+      ),
+      line_n: LineNumberOneBased(19),
+      char_n: CharNumberOneBased(3),
+    ), CharLoc(
+      file_offset: RangeInclusive(
+        start: 231,
+        end: 231,
+      ),
+      line_n: LineNumberOneBased(19),
+      char_n: CharNumberOneBased(3),
+    )),
+    token: PunctuationSingleChar('*'),
+  )),
+  Eod(
+    loc: CharLoc(
+      file_offset: RangeInclusive(
+        start: 234,
+        end: 234,
+      ),
+      line_n: LineNumberOneBased(20),
+      char_n: CharNumberOneBased(1),
+    ),
+  ),
+]
