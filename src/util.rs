@@ -10,10 +10,6 @@
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
 
-// use anyhow::*;
-// use serde::{Deserialize, Serialize};
-//use thiserror::Error;
-
 /// Build an Option<> from a match expression.
 ///
 /// let opt_ch: Option<char> = maybe_match!{

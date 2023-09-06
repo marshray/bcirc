@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Seek};
+use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 
 pub const TEST_DATA_DIR: &'static str = "test_data";
@@ -48,11 +48,12 @@ pub fn insta_glob_result<
             snapshot_path,
             GLOB_STR,
             |file_path| {
-                let mut file = File::open(file_path).unwrap();
-                let mut bufreader = BufReader::new(file);
+                let file = File::open(file_path).unwrap();
+                let bufreader = BufReader::new(file);
 
                 //let mut src_bytes = Vec::<u8>::new();
                 //bufreader.read_to_end(&mut src_bytes)?;
+                // use::std::io::Seek;
                 //bufreader.rewind()?;
 
                 let bx_bufread = Box::new(bufreader);
@@ -75,7 +76,7 @@ fn file_specific_redactions<F: FnMut(&Path, Box<dyn BufRead>) -> anyhow::Result<
     // than `.bin`.
     if file_path.extension().unwrap_or_default() != "bin" {
         let selector = "[].loc";
-        let replacement = insta::dynamic_redaction(|mut value, path| {
+        let replacement = insta::dynamic_redaction(|mut value, _content_pathpath| {
             value.walk(&mut |content| -> bool {
                 //eprintln!("Debug: {content:?}");
                 // Struct("SourceFileCharLoc", [

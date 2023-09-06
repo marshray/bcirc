@@ -5,30 +5,30 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+#![allow(dead_code)] //? TODO for development
+
 use std::io::{BufRead, Read};
 
-use anyhow::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub enum ByteOrEof {
     Byte(u8),
     StdIoError(String),
     Eof,
 }
 
-#[derive(Debug, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct SourceByteReadResult {
     pub file_offset: u64,
     pub byte_or_eof: ByteOrEof,
 }
 
-pub fn source_bytes(
-    bx_bufread: Box<dyn std::io::BufRead>,
-) -> impl Iterator<Item = SourceByteReadResult> {
-    let mut bytes = bx_bufread.bytes();
+#[allow(dead_code)]
+pub fn source_bytes(bx_bufread: Box<dyn BufRead>) -> impl Iterator<Item = SourceByteReadResult> {
+    let bytes = bx_bufread.bytes();
 
-    let mut bytes_eod = bytes
+    let bytes_eod = bytes
         .map(|result_by| Some(result_by))
         .chain(std::iter::once(None));
 
@@ -55,8 +55,8 @@ mod test {
 
         const TEST_DATA_SUBDIR: &'static str = "source_bytes";
 
-        crate::test_util::insta_glob(TEST_DATA_SUBDIR, |file_path, bx_bufread| {
-            let mut source_bytes = source_bytes(bx_bufread);
+        crate::test_util::insta_glob(TEST_DATA_SUBDIR, |_file_path, bx_bufread| {
+            let source_bytes = source_bytes(bx_bufread);
 
             let results = source_bytes.collect::<Vec<_>>();
 

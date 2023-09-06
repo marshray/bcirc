@@ -5,17 +5,10 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-#![allow(dead_code)] //? TODO for development
-#![allow(unused_mut)] //? TODO for development
-#![allow(unused_variables)] //? TODO for development
-#![allow(unused_imports)] //? TODO for development
-
 #![feature(iter_from_generator)]
 #![feature(generators, generator_trait)]
 #![feature(generic_arg_infer)] // const arrays in tests
 #![feature(return_position_impl_trait_in_trait)]
-
-use std::ops::RangeInclusive;
 
 mod data_repr;
 mod lexer;
@@ -25,10 +18,3 @@ mod util;
 
 #[cfg(test)]
 mod test_util;
-
-//use std::fmt::{Debug, Formatter};
-
-use anyhow::*;
-fn main() -> Result<()> {
-    Ok(())
-}
