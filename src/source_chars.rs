@@ -5,24 +5,20 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-#![allow(dead_code)] //? TODO for development
-#![allow(unused_mut)] //? TODO for development
-#![allow(unused_variables)] //? TODO for development
-#![allow(unused_imports)] //? TODO for development
+use std::ops::RangeInclusive;
 
-use std::ops::{Generator, GeneratorState, RangeInclusive};
-use std::pin::Pin;
-
-use anyhow::*;
 use serde::{Deserialize, Serialize};
 
 use crate::maybe_match;
 use crate::source_bytes::{ByteOrEof, SourceByteReadResult};
+use crate::util::{one_shl, u128_ch_bit_test};
 
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 pub struct LineNumberOneBased(u64);
+
 impl LineNumberOneBased {
+    #[allow(dead_code)] // I don't know why it doesn't pick up the usage below.
     pub fn inc(&mut self) {
         self.0 += 1;
     }
@@ -33,6 +29,7 @@ impl LineNumberOneBased {
 pub struct CharNumberOneBased(u64);
 
 impl CharNumberOneBased {
+    #[allow(dead_code)] // I don't know why it doesn't pick up the usage below.
     pub fn inc(&mut self) {
         self.0 += 1;
     }
@@ -40,7 +37,7 @@ impl CharNumberOneBased {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct CharLoc {
-    pub file_offset: RangeInclusive<u64>,
+    pub fo_range: RangeInclusive<u64>,
     pub line_n: LineNumberOneBased,
     pub char_n: CharNumberOneBased,
 }
@@ -48,7 +45,7 @@ pub struct CharLoc {
 impl CharLoc {
     pub fn new() -> CharLoc {
         CharLoc {
-            file_offset: 0u64..=0,
+            fo_range: 0u64..=0,
             line_n: LineNumberOneBased(1),
             char_n: CharNumberOneBased(1),
         }
@@ -83,9 +80,7 @@ impl SourceCharReadResult {
             char_result: CharResult::Eof,
         }
     }
-}
 
-impl SourceCharReadResult {
     /// Returns if the result is a valid Eol.
     pub fn is_eol(&self) -> bool {
         matches!(
@@ -124,7 +119,7 @@ impl SourceCharReadResult {
         matches!(
             *self,
             SourceCharReadResult {
-                char_result: CharResult::Char(ch),
+                char_result: CharResult::Char(_),
                 ..
             }
         )
@@ -147,33 +142,44 @@ impl SourceCharReadResult {
     }
 }
 
+const fn is_cr_or_lf(ch: char) -> bool {
+    const PUNCTUATION_FIRST_CHAR: u128 = one_shl('\r') | one_shl('\n');
+
+    u128_ch_bit_test(PUNCTUATION_FIRST_CHAR, ch)
+}
+
+#[allow(dead_code)] //? TODO Hard to get this to be recognized as used for some reason.
 pub fn source_chars(
     source_bytes: &mut dyn Iterator<Item = SourceByteReadResult>,
-) -> impl Iterator<Item = SourceCharReadResult>  + '_ {
+) -> impl Iterator<Item = SourceCharReadResult> + '_ {
     let mut source_char_read_result = SourceCharReadResult {
         loc: CharLoc::new(),
         char_result: CharResult::Eof,
     };
 
-    //let mut file_offset_buf0 = 0u64;
     let mut utf8_buf = [0u8; 4];
     let mut utf8_buf_len = 0;
     let mut need_more_bytes_for_this_char = false;
     let mut track_prev_char_was_cr = false;
 
-    //let mut generate_source_chars = move
     std::iter::from_generator(move || {
         for source_byte_read_result in source_bytes {
-            source_char_read_result.loc.file_offset = if need_more_bytes_for_this_char {
-                // Need more bytes for the current char
-                *source_char_read_result.loc.file_offset.start()
-            } else {
-                // Begin a new char
-                utf8_buf_len = 0;
-                source_byte_read_result.file_offset
-            }..=source_byte_read_result.file_offset;
+            // Figure out the file offset range of the new char.
+            source_char_read_result.loc.fo_range = {
+                let byte_fo = source_byte_read_result.file_offset;
+                let mut char_fo_start = *source_char_read_result.loc.fo_range.start();
 
-            need_more_bytes_for_this_char = false;
+                if need_more_bytes_for_this_char {
+                    // Just extend existing char
+                    need_more_bytes_for_this_char = false;
+                } else {
+                    // Begin a new char
+                    utf8_buf_len = 0;
+                    char_fo_start = byte_fo;
+                }
+
+                char_fo_start..=byte_fo
+            };
 
             match source_byte_read_result.byte_or_eof {
                 ByteOrEof::Byte(by) => {
@@ -192,15 +198,16 @@ pub fn source_chars(
                             if prev_char_was_cr && ch == '\n' {
                                 // Ignore LF after CR
                             } else {
-                                let (yielding_eol, char_or_something) = if ch == '\r' || ch == '\n' {
-                                    (true, CharResult::Eol)
+                                let yielding_eol = is_cr_or_lf(ch);
+
+                                let char_result = if yielding_eol {
+                                    CharResult::Eol
                                 } else {
-                                    (false, CharResult::Char(ch))
+                                    CharResult::Char(ch)
                                 };
 
-                                let _char_or_eof = char_or_something.clone();
                                 let scrr = SourceCharReadResult {
-                                    char_result: char_or_something,
+                                    char_result,
                                     ..source_char_read_result.clone()
                                 };
                                 //eprintln!("\nyielding {:?}", &scrr);
@@ -226,7 +233,7 @@ pub fn source_chars(
                                     need_more_bytes_for_this_char = true;
                                     // continue
                                 }
-                                Some(len) => {
+                                Some(_len) => {
                                     // An invalid Utf8 byte was encountered
                                     debug_assert_eq!(utf8error.valid_up_to(), 0);
 
@@ -276,14 +283,11 @@ pub fn source_chars(
 mod test {
     #[test]
     fn test() {
-        use crate::source_bytes::source_bytes;
-        use crate::source_chars::{source_chars, SourceCharReadResult};
+        const TEST_DATA_SUBDIR: &str = "source_chars";
 
-        const TEST_DATA_SUBDIR: &'static str = "source_chars";
-
-        crate::test_util::insta_glob(TEST_DATA_SUBDIR, |file_path, bx_bufread| {
-            let mut source_bytes = source_bytes(bx_bufread);
-            let mut source_chars = source_chars(&mut source_bytes);
+        crate::test_util::insta_glob(TEST_DATA_SUBDIR, |_file_path, bx_bufread| {
+            let mut source_bytes = crate::source_bytes::source_bytes(bx_bufread);
+            let source_chars = crate::source_chars::source_chars(&mut source_bytes);
 
             let results = source_chars.collect::<Vec<_>>();
 

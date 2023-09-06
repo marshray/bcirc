@@ -9,8 +9,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 
-pub const TEST_DATA_DIR: &'static str = "test_data";
-pub const GLOB_STR: &'static str = "*.{bin,txt}";
+pub const TEST_DATA_DIR: &str = "test_data";
+pub const GLOB_STR: &str = "*.{bin,txt}";
 
 /// Calls `test_fn` for every file under `test_data_subdir` matching `GLOB_STR`.
 ///
@@ -58,7 +58,7 @@ pub fn insta_glob_result<
 
                 let bx_bufread = Box::new(bufreader);
 
-                file_specific_redactions(&file_path, bx_bufread, &mut test_fn_returning_result);
+                file_specific_redactions(file_path, bx_bufread, &mut test_fn_returning_result);
             }
         );
     });
@@ -84,14 +84,12 @@ fn file_specific_redactions<F: FnMut(&Path, Box<dyn BufRead>) -> anyhow::Result<
                 //     ...
                 // ])
                 use insta::_macro_support::Content;
-                match content {
-                    Content::Struct(_struct_type, ref mut vec) => {
-                        // struct_type: "SourceFileCharLoc"
-                        //eprintln!("struct_type: {_struct_type:?}");
-                        vec.retain(|(label, _)| label != &"file_offset_range");
-                    }
-                    _ => {}
+                if let Content::Struct(_struct_type, ref mut vec) = content {
+                    // struct_type: "SourceFileCharLoc"
+                    //eprintln!("struct_type: {_struct_type:?}");
+                    vec.retain(|(label, _)| *label != "file_offset_range");
                 }
+
                 false
             });
             value

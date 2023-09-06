@@ -28,9 +28,7 @@ pub struct SourceByteReadResult {
 pub fn source_bytes(bx_bufread: Box<dyn BufRead>) -> impl Iterator<Item = SourceByteReadResult> {
     let bytes = bx_bufread.bytes();
 
-    let bytes_eod = bytes
-        .map(|result_by| Some(result_by))
-        .chain(std::iter::once(None));
+    let bytes_eod = bytes.map(Some).chain(std::iter::once(None));
 
     bytes_eod.scan(0u64, |state, opt_stdioresult| {
         let file_offset = *state;
@@ -51,12 +49,10 @@ pub fn source_bytes(bx_bufread: Box<dyn BufRead>) -> impl Iterator<Item = Source
 mod test {
     #[test]
     fn test() {
-        use crate::source_bytes::source_bytes;
-
-        const TEST_DATA_SUBDIR: &'static str = "source_bytes";
+        const TEST_DATA_SUBDIR: &str = "source_bytes";
 
         crate::test_util::insta_glob(TEST_DATA_SUBDIR, |_file_path, bx_bufread| {
-            let source_bytes = source_bytes(bx_bufread);
+            let source_bytes = crate::source_bytes::source_bytes(bx_bufread);
 
             let results = source_bytes.collect::<Vec<_>>();
 

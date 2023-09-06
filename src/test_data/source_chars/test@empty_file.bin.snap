@@ -5,7 +5,7 @@ input_file: src/test_data/source_chars/empty_file.bin
 [
   SourceCharReadResult(
     loc: CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 0,
         end: 0,
       ),

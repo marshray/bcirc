@@ -24,3 +24,24 @@ macro_rules! maybe_match {
         }
     };
 }
+
+pub(crate) const fn one_shl(ch: char) -> u128 {
+    let ch = ch as u32;
+    if ch < 128 {
+        1_u128 << ch
+    } else {
+        assert!(ch < 128);
+        0
+    }
+}
+
+pub(crate) const fn fs_shl(n: u32, ch: char) -> u128 {
+    let ch = ch as u32;
+    assert!(n + ch < 128);
+    ((1_u128 << n) - 1) << ch
+}
+
+pub(crate) const fn u128_ch_bit_test(u: u128, ch: char) -> bool {
+    let ch = ch as u32;
+    ch < 128 && ((u >> ch) & 1) != 0
+}

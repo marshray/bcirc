@@ -13,53 +13,31 @@
 use std::iter::FusedIterator;
 use std::ops::RangeInclusive;
 
-use anyhow::*;
 use serde::{Deserialize, Serialize};
 
 use crate::data_repr::IntegerRepr;
 use crate::source_chars::{CharError, CharLoc, CharResult, SourceCharReadResult};
-
-const fn one_shl(ch: char) -> u128 {
-    let ch = ch as u32;
-    if ch < 128 {
-        1_u128 << ch
-    } else {
-        assert!(ch < 128);
-        0
-    }
-}
-
-const fn fs_shl(n: u32, ch: char) -> u128 {
-    let ch = ch as u32;
-    assert!(n + ch < 128);
-    ((1_u128 << n) - 1) << ch
-}
-
-const fn u128_ch_bit_test(u: u128, ch: char) -> bool {
-    let ch = ch as u32;
-    ch < 128 && ((u >> ch) & 1) != 0
-}
+use crate::util::{fs_shl, one_shl, u128_ch_bit_test};
 
 fn is_punctuation_single_char(ch: char) -> bool {
     #[rustfmt::skip]
-    const PUNCTUATION_SINGLE_CHAR: u128 = 0
-        | one_shl('[') | one_shl(']')
-        | one_shl('{') | one_shl('}')
-        | one_shl('(') | one_shl(')')
-        | one_shl('-') | one_shl('!')
-        | one_shl('^') | one_shl('&')
-        | one_shl('*') | one_shl(',')
-        | one_shl(';');
+    const PUNCTUATION_SINGLE_CHAR: u128 =
+        one_shl('[') | one_shl(']') |
+        one_shl('{') | one_shl('}') |
+        one_shl('(') | one_shl(')') |
+        one_shl('-') | one_shl('!') |
+        one_shl('^') | one_shl('&') |
+        one_shl('*') | one_shl(',') |
+        one_shl(';');
 
     u128_ch_bit_test(PUNCTUATION_SINGLE_CHAR, ch)
 }
 
 fn is_punctuation_first_char(ch: char) -> bool {
     #[rustfmt::skip]
-    const PUNCTUATION_FIRST_CHAR: u128 = 0
-        | one_shl('<') | one_shl('>')
-        | one_shl('=')
-        | one_shl('&');
+    const PUNCTUATION_FIRST_CHAR: u128 =
+        one_shl('<') | one_shl('>') |
+        one_shl('=') | one_shl('&');
 
     u128_ch_bit_test(PUNCTUATION_FIRST_CHAR, ch)
 }
@@ -81,10 +59,10 @@ fn is_comment_first_char(ch: char) -> bool {
 }
 
 #[rustfmt::skip]
-const IDENTIFIER_FIRST_CHAR: u128 = 0
-    | fs_shl(26, 'A')
-    | fs_shl(26, 'a')
-    | one_shl('_');
+const IDENTIFIER_FIRST_CHAR: u128 =
+    fs_shl(26, 'A') | 
+    fs_shl(26, 'a') |
+    one_shl('_');
 
 fn is_identifier_first_char(ch: char) -> bool {
     u128_ch_bit_test(IDENTIFIER_FIRST_CHAR, ch)
@@ -324,7 +302,9 @@ impl<'a> Lexer<'a> {
 
                 if state == 2 {
                     return None; // Success
-                } else if !self.cur_read_result().is_char_or_eol() {
+                }
+
+                if !self.cur_read_result().is_char_or_eol() {
                     return None; // Some kind of problem. Let the outer loop find it.
                 }
 
@@ -406,17 +386,13 @@ impl<'a> std::iter::FusedIterator for Lexer<'a> {}
 mod test {
     #[test]
     fn test() {
-        use crate::lexer::Lexer;
-        use crate::source_bytes::source_bytes;
-        use crate::source_chars::source_chars;
-
-        const TEST_DATA_SUBDIR: &'static str = "lexer";
+        const TEST_DATA_SUBDIR: &str = "lexer";
 
         crate::test_util::insta_glob(TEST_DATA_SUBDIR, |file_path, bx_bufread| {
-            let mut source_bytes = source_bytes(bx_bufread);
-            let mut source_chars = source_chars(&mut source_bytes);
+            let mut source_bytes = crate::source_bytes::source_bytes(bx_bufread);
+            let mut source_chars = crate::source_chars::source_chars(&mut source_bytes);
 
-            let mut tokens = Lexer::new(&mut source_chars);
+            let mut tokens = crate::lexer::Lexer::new(&mut source_chars);
 
             let results = tokens.collect::<Vec<_>>();
 

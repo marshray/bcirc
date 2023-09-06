@@ -5,14 +5,14 @@ input_file: src/test_data/lexer/integer_literals.txt
 [
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 0,
         end: 0,
       ),
       line_n: LineNumberOneBased(1),
       char_n: CharNumberOneBased(1),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 0,
         end: 0,
       ),
@@ -23,14 +23,14 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 3,
         end: 3,
       ),
       line_n: LineNumberOneBased(2),
       char_n: CharNumberOneBased(1),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 3,
         end: 3,
       ),
@@ -41,14 +41,14 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 6,
         end: 6,
       ),
       line_n: LineNumberOneBased(3),
       char_n: CharNumberOneBased(1),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 7,
         end: 7,
       ),
@@ -59,14 +59,14 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 10,
         end: 10,
       ),
       line_n: LineNumberOneBased(4),
       char_n: CharNumberOneBased(1),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 12,
         end: 12,
       ),
@@ -77,14 +77,14 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 16,
         end: 16,
       ),
       line_n: LineNumberOneBased(5),
       char_n: CharNumberOneBased(2),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 54,
         end: 54,
       ),
@@ -95,14 +95,14 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 57,
         end: 57,
       ),
       line_n: LineNumberOneBased(6),
       char_n: CharNumberOneBased(1),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 57,
         end: 57,
       ),
@@ -113,14 +113,14 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Token(TokenInfo(
     span: (CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 58,
         end: 58,
       ),
       line_n: LineNumberOneBased(6),
       char_n: CharNumberOneBased(2),
     ), CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 93,
         end: 93,
       ),
@@ -131,7 +131,7 @@ input_file: src/test_data/lexer/integer_literals.txt
   )),
   Eod(
     loc: CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 96,
         end: 96,
       ),

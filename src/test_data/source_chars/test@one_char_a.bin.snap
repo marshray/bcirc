@@ -5,7 +5,7 @@ input_file: src/test_data/source_chars/one_char_a.bin
 [
   SourceCharReadResult(
     loc: CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 0,
         end: 0,
       ),
@@ -16,7 +16,7 @@ input_file: src/test_data/source_chars/one_char_a.bin
   ),
   SourceCharReadResult(
     loc: CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 1,
         end: 1,
       ),
@@ -27,7 +27,7 @@ input_file: src/test_data/source_chars/one_char_a.bin
   ),
   SourceCharReadResult(
     loc: CharLoc(
-      file_offset: RangeInclusive(
+      fo_range: RangeInclusive(
         start: 1,
         end: 1,
       ),
