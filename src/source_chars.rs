@@ -10,11 +10,11 @@
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
 
-use std::ops::RangeInclusive;
+use std::ops::{Generator, GeneratorState, RangeInclusive};
+use std::pin::Pin;
 
 use anyhow::*;
 use serde::{Deserialize, Serialize};
-//use thiserror::Error;
 
 use crate::maybe_match;
 use crate::source_bytes::{ByteOrEof, SourceByteReadResult};
@@ -147,10 +147,9 @@ impl SourceCharReadResult {
     }
 }
 
-#[propane::generator]
 pub fn source_chars(
     source_bytes: &mut dyn Iterator<Item = SourceByteReadResult>,
-) -> SourceCharReadResult {
+) -> impl Iterator<Item = SourceCharReadResult>  + '_ {
     let mut source_char_read_result = SourceCharReadResult {
         loc: CharLoc::new(),
         char_result: CharResult::Eof,
@@ -162,112 +161,115 @@ pub fn source_chars(
     let mut need_more_bytes_for_this_char = false;
     let mut track_prev_char_was_cr = false;
 
-    for source_byte_read_result in source_bytes {
-        source_char_read_result.loc.file_offset = if need_more_bytes_for_this_char {
-            // Need more bytes for the current char
-            *source_char_read_result.loc.file_offset.start()
-        } else {
-            // Begin a new char
-            utf8_buf_len = 0;
-            source_byte_read_result.file_offset
-        }..=source_byte_read_result.file_offset;
+    //let mut generate_source_chars = move
+    std::iter::from_generator(move || {
+        for source_byte_read_result in source_bytes {
+            source_char_read_result.loc.file_offset = if need_more_bytes_for_this_char {
+                // Need more bytes for the current char
+                *source_char_read_result.loc.file_offset.start()
+            } else {
+                // Begin a new char
+                utf8_buf_len = 0;
+                source_byte_read_result.file_offset
+            }..=source_byte_read_result.file_offset;
 
-        need_more_bytes_for_this_char = false;
+            need_more_bytes_for_this_char = false;
 
-        match source_byte_read_result.byte_or_eof {
-            ByteOrEof::Byte(by) => {
-                assert!(utf8_buf_len < 4);
-                utf8_buf[utf8_buf_len] = by;
-                utf8_buf_len += 1;
+            match source_byte_read_result.byte_or_eof {
+                ByteOrEof::Byte(by) => {
+                    assert!(utf8_buf_len < 4);
+                    utf8_buf[utf8_buf_len] = by;
+                    utf8_buf_len += 1;
 
-                match std::str::from_utf8(&utf8_buf[0..utf8_buf_len]) {
-                    Result::Ok(ch_str) => {
-                        assert_eq!(ch_str.len(), 1);
-                        let ch = ch_str.chars().next().unwrap();
+                    match std::str::from_utf8(&utf8_buf[0..utf8_buf_len]) {
+                        Result::Ok(ch_str) => {
+                            assert_eq!(ch_str.len(), 1);
+                            let ch = ch_str.chars().next().unwrap();
 
-                        let prev_char_was_cr = track_prev_char_was_cr;
-                        track_prev_char_was_cr = ch == '\r';
+                            let prev_char_was_cr = track_prev_char_was_cr;
+                            track_prev_char_was_cr = ch == '\r';
 
-                        if prev_char_was_cr && ch == '\n' {
-                            // Ignore LF after CR
-                        } else {
-                            let (yielding_eol, char_or_something) = if ch == '\r' || ch == '\n' {
-                                (true, CharResult::Eol)
+                            if prev_char_was_cr && ch == '\n' {
+                                // Ignore LF after CR
                             } else {
-                                (false, CharResult::Char(ch))
-                            };
+                                let (yielding_eol, char_or_something) = if ch == '\r' || ch == '\n' {
+                                    (true, CharResult::Eol)
+                                } else {
+                                    (false, CharResult::Char(ch))
+                                };
 
-                            let _char_or_eof = char_or_something.clone();
-                            let scrr = SourceCharReadResult {
-                                char_result: char_or_something,
-                                ..source_char_read_result.clone()
-                            };
-                            //eprintln!("\nyielding {:?}", &scrr);
-
-                            yield scrr;
-
-                            if yielding_eol {
-                                //eprintln!("advancing to next line: {:?}", &_char_or_eof);
-                                // Advance to next line
-                                source_char_read_result.loc.char_n = CharNumberOneBased(1);
-                                source_char_read_result.loc.line_n.inc();
-                            } else {
-                                //eprintln!("advancing to next char: {:?}", &_char_or_eof);
-                                // Advance to next char
-                                source_char_read_result.loc.char_n.inc();
-                            }
-                        }
-                    }
-                    Result::Err(utf8error) => {
-                        match utf8error.error_len() {
-                            None => {
-                                // Need more bytes for this char
-                                need_more_bytes_for_this_char = true;
-                                // continue
-                            }
-                            Some(len) => {
-                                // An invalid Utf8 byte was encountered
-                                debug_assert_eq!(utf8error.valid_up_to(), 0);
-
-                                let char_error = CharError::InvalidUtf8(by);
-                                yield SourceCharReadResult {
-                                    char_result: CharResult::CharError(char_error),
+                                let _char_or_eof = char_or_something.clone();
+                                let scrr = SourceCharReadResult {
+                                    char_result: char_or_something,
                                     ..source_char_read_result.clone()
                                 };
+                                //eprintln!("\nyielding {:?}", &scrr);
+
+                                yield scrr;
+
+                                if yielding_eol {
+                                    //eprintln!("advancing to next line: {:?}", &_char_or_eof);
+                                    // Advance to next line
+                                    source_char_read_result.loc.char_n = CharNumberOneBased(1);
+                                    source_char_read_result.loc.line_n.inc();
+                                } else {
+                                    //eprintln!("advancing to next char: {:?}", &_char_or_eof);
+                                    // Advance to next char
+                                    source_char_read_result.loc.char_n.inc();
+                                }
                             }
-                        } // match
-                    } // Err
-                } // match from_utf8
-            } // ByteOrEof::Byte
-            ByteOrEof::StdIoError(err_str) => {
-                yield SourceCharReadResult {
-                    char_result: CharResult::CharError(CharError::StdIoError(err_str)),
-                    ..source_char_read_result.clone()
-                };
-            }
-            ByteOrEof::Eof => {
-                if utf8_buf_len != 0 {
+                        }
+                        Result::Err(utf8error) => {
+                            match utf8error.error_len() {
+                                None => {
+                                    // Need more bytes for this char
+                                    need_more_bytes_for_this_char = true;
+                                    // continue
+                                }
+                                Some(len) => {
+                                    // An invalid Utf8 byte was encountered
+                                    debug_assert_eq!(utf8error.valid_up_to(), 0);
+
+                                    let char_error = CharError::InvalidUtf8(by);
+                                    yield SourceCharReadResult {
+                                        char_result: CharResult::CharError(char_error),
+                                        ..source_char_read_result.clone()
+                                    };
+                                }
+                            } // match
+                        } // Err
+                    } // match from_utf8
+                } // ByteOrEof::Byte
+                ByteOrEof::StdIoError(err_str) => {
                     yield SourceCharReadResult {
-                        char_result: CharResult::CharError(CharError::UnexpectedEof),
+                        char_result: CharResult::CharError(CharError::StdIoError(err_str)),
                         ..source_char_read_result.clone()
                     };
-                } else {
-                    if source_char_read_result.loc.char_n != CharNumberOneBased(1) {
+                }
+                ByteOrEof::Eof => {
+                    if utf8_buf_len != 0 {
                         yield SourceCharReadResult {
-                            char_result: CharResult::Eol,
+                            char_result: CharResult::CharError(CharError::UnexpectedEof),
                             ..source_char_read_result.clone()
                         };
-                        source_char_read_result.loc.char_n.inc();
-                    }
+                    } else {
+                        if source_char_read_result.loc.char_n != CharNumberOneBased(1) {
+                            yield SourceCharReadResult {
+                                char_result: CharResult::Eol,
+                                ..source_char_read_result.clone()
+                            };
+                            source_char_read_result.loc.char_n.inc();
+                        }
 
-                    yield SourceCharReadResult {
-                        char_result: CharResult::Eof,
-                        ..source_char_read_result.clone()
+                        yield SourceCharReadResult {
+                            char_result: CharResult::Eof,
+                            ..source_char_read_result.clone()
+                        };
                     };
-                };
-            }
-        } // match
-    } // for each byte
+                }
+            } // match
+        } // for in source_bytes
+    }) // from_generator
 }
 
 #[cfg(test)]
