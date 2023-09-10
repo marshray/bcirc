@@ -3,59 +3,30 @@ source: src/source_chars.rs
 input_file: src/test_data/source_chars/two_lines.txt
 ---
 [
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('a'),
+  Char(
+    ch: 'a',
+    fo: 0,
+    len: 1,
+    line_char: LineCharNums((1, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 1,
-        end: 1,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 1,
+    len: 2,
+    line_char: LineCharNums((1, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 3,
-        end: 3,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('b'),
+  Char(
+    ch: 'b',
+    fo: 3,
+    len: 1,
+    line_char: LineCharNums((2, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 4,
-        end: 4,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 4,
+    len: 2,
+    line_char: LineCharNums((2, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 6,
-        end: 6,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Eof,
+  Eof(
+    file_size: 6,
+    last_line: LineNum(2),
   ),
 ]

@@ -3,15 +3,8 @@ source: src/source_chars.rs
 input_file: src/test_data/source_chars/empty_file.bin
 ---
 [
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Eof,
+  Eof(
+    file_size: 0,
+    last_line: LineNum(1),
   ),
 ]

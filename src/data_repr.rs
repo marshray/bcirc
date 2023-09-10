@@ -12,7 +12,6 @@
 
 use anyhow::*;
 use serde::{Deserialize, Serialize};
-//use thiserror::Error;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum IntegerRepr {

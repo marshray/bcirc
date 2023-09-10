@@ -14,8 +14,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub enum ByteOrEof {
     Byte(u8),
-    StdIoError(String),
     Eof,
+    StdIoError(String),
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Serialize)]

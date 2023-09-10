@@ -4,247 +4,98 @@ input_file: src/test_data/lexer/basic_tokens.txt
 ---
 [
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 1)),
+      end: LineCharNums((1, 1)),
+    ),
     token: PunctuationSingleChar('['),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 1,
-        end: 1,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(2),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 1,
-        end: 1,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(2),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 2)),
+      end: LineCharNums((1, 2)),
+    ),
     token: PunctuationSingleChar(']'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 3,
-        end: 3,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(4),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 3,
-        end: 3,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(4),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 4)),
+      end: LineCharNums((1, 4)),
+    ),
     token: PunctuationSingleChar('{'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 5,
-        end: 5,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(6),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 5,
-        end: 5,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(6),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 6)),
+      end: LineCharNums((1, 6)),
+    ),
     token: PunctuationSingleChar('}'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 8,
-        end: 8,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 8,
-        end: 8,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((2, 1)),
+      end: LineCharNums((2, 1)),
+    ),
     token: PunctuationSingleChar('('),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 9,
-        end: 9,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(2),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 9,
-        end: 9,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(2),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((2, 2)),
+      end: LineCharNums((2, 2)),
+    ),
     token: PunctuationSingleChar(')'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 12,
-        end: 12,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 12,
-        end: 12,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((3, 1)),
+      end: LineCharNums((3, 1)),
+    ),
     token: PunctuationSingleChar('-'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 13,
-        end: 13,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(2),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 13,
-        end: 13,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(2),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((3, 2)),
+      end: LineCharNums((3, 2)),
+    ),
     token: PunctuationSingleChar('!'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 16,
-        end: 16,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 16,
-        end: 16,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 1)),
+      end: LineCharNums((4, 1)),
+    ),
     token: PunctuationSingleChar('^'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 17,
-        end: 17,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(2),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 17,
-        end: 17,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(2),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 2)),
+      end: LineCharNums((4, 2)),
+    ),
     token: PunctuationSingleChar('&'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 18,
-        end: 18,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(3),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 18,
-        end: 18,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(3),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 3)),
+      end: LineCharNums((4, 3)),
+    ),
     token: PunctuationSingleChar('*'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 21,
-        end: 21,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 21,
-        end: 21,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((5, 1)),
+      end: LineCharNums((5, 1)),
+    ),
     token: PunctuationSingleChar(','),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 23,
-        end: 23,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(3),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 23,
-        end: 23,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(3),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((5, 3)),
+      end: LineCharNums((5, 3)),
+    ),
     token: PunctuationSingleChar(';'),
   )),
   Eod(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 26,
-        end: 26,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(1),
-    ),
+    file_size: 26,
+    last_line: LineNum(5),
   ),
 ]

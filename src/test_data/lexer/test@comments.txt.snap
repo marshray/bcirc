@@ -4,229 +4,91 @@ input_file: src/test_data/lexer/comments.txt
 ---
 [
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 1)),
+      end: LineCharNums((1, 1)),
+    ),
     token: LiteralInteger(I128(1)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 19,
-        end: 19,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 19,
-        end: 19,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((2, 1)),
+      end: LineCharNums((2, 1)),
+    ),
     token: LiteralInteger(I128(2)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 24,
-        end: 24,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 24,
-        end: 24,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 1)),
+      end: LineCharNums((4, 1)),
+    ),
     token: LiteralInteger(I128(3)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 46,
-        end: 46,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(23),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 46,
-        end: 46,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(23),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 23)),
+      end: LineCharNums((4, 23)),
+    ),
     token: LiteralInteger(I128(4)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 51,
-        end: 51,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 51,
-        end: 51,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((6, 1)),
+      end: LineCharNums((6, 1)),
+    ),
     token: LiteralInteger(I128(5)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 85,
-        end: 85,
-      ),
-      line_n: LineNumberOneBased(8),
-      char_n: CharNumberOneBased(4),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 85,
-        end: 85,
-      ),
-      line_n: LineNumberOneBased(8),
-      char_n: CharNumberOneBased(4),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((8, 4)),
+      end: LineCharNums((8, 4)),
+    ),
     token: LiteralInteger(I128(6)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 90,
-        end: 90,
-      ),
-      line_n: LineNumberOneBased(10),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 90,
-        end: 90,
-      ),
-      line_n: LineNumberOneBased(10),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((10, 1)),
+      end: LineCharNums((10, 1)),
+    ),
     token: LiteralInteger(I128(7)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 148,
-        end: 148,
-      ),
-      line_n: LineNumberOneBased(12),
-      char_n: CharNumberOneBased(7),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 148,
-        end: 148,
-      ),
-      line_n: LineNumberOneBased(12),
-      char_n: CharNumberOneBased(7),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((12, 7)),
+      end: LineCharNums((12, 7)),
+    ),
     token: LiteralInteger(I128(8)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 177,
-        end: 177,
-      ),
-      line_n: LineNumberOneBased(15),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 177,
-        end: 177,
-      ),
-      line_n: LineNumberOneBased(15),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((15, 1)),
+      end: LineCharNums((15, 1)),
+    ),
     token: LiteralInteger(I128(9)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 186,
-        end: 186,
-      ),
-      line_n: LineNumberOneBased(16),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 187,
-        end: 187,
-      ),
-      line_n: LineNumberOneBased(16),
-      char_n: CharNumberOneBased(2),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((16, 1)),
+      end: LineCharNums((16, 2)),
+    ),
     token: LiteralInteger(I128(10)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 229,
-        end: 229,
-      ),
-      line_n: LineNumberOneBased(19),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 229,
-        end: 229,
-      ),
-      line_n: LineNumberOneBased(19),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((19, 1)),
+      end: LineCharNums((19, 1)),
+    ),
     token: PunctuationSingleChar('/'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 231,
-        end: 231,
-      ),
-      line_n: LineNumberOneBased(19),
-      char_n: CharNumberOneBased(3),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 231,
-        end: 231,
-      ),
-      line_n: LineNumberOneBased(19),
-      char_n: CharNumberOneBased(3),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((19, 3)),
+      end: LineCharNums((19, 3)),
+    ),
     token: PunctuationSingleChar('*'),
   )),
   Eod(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 234,
-        end: 234,
-      ),
-      line_n: LineNumberOneBased(20),
-      char_n: CharNumberOneBased(1),
-    ),
+    file_size: 234,
+    last_line: LineNum(19),
   ),
 ]

@@ -4,13 +4,7 @@ input_file: src/test_data/lexer/empty_file.txt
 ---
 [
   Eod(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ),
+    file_size: 0,
+    last_line: LineNum(1),
   ),
 ]

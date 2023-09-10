@@ -4,139 +4,56 @@ input_file: src/test_data/lexer/integer_literals.txt
 ---
 [
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 1)),
+      end: LineCharNums((1, 1)),
+    ),
     token: LiteralInteger(I128(0)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 3,
-        end: 3,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 3,
-        end: 3,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((2, 1)),
+      end: LineCharNums((2, 1)),
+    ),
     token: LiteralInteger(I128(1)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 6,
-        end: 6,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 7,
-        end: 7,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(2),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((3, 1)),
+      end: LineCharNums((3, 2)),
+    ),
     token: LiteralInteger(I128(69)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 10,
-        end: 10,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 12,
-        end: 12,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(3),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 1)),
+      end: LineCharNums((4, 3)),
+    ),
     token: LiteralInteger(I128(420)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 16,
-        end: 16,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(2),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 54,
-        end: 54,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(40),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((5, 2)),
+      end: LineCharNums((5, 40)),
+    ),
     token: LiteralInteger(I128(170141183460469231731687303715884105727)),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 57,
-        end: 57,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(1),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 57,
-        end: 57,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(1),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((6, 1)),
+      end: LineCharNums((6, 1)),
+    ),
     token: PunctuationSingleChar('-'),
   )),
   Token(TokenInfo(
-    span: (CharLoc(
-      fo_range: RangeInclusive(
-        start: 58,
-        end: 58,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(2),
-    ), CharLoc(
-      fo_range: RangeInclusive(
-        start: 93,
-        end: 93,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(37),
-    )),
+    linechar_range: RangeInclusive(
+      start: LineCharNums((6, 2)),
+      end: LineCharNums((6, 37)),
+    ),
     token: LiteralInteger(I128(141183460469231731687303715884105728)),
   )),
   Eod(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 96,
-        end: 96,
-      ),
-      line_n: LineNumberOneBased(7),
-      char_n: CharNumberOneBased(1),
-    ),
+    file_size: 96,
+    last_line: LineNum(6),
   ),
 ]

@@ -15,8 +15,9 @@ use std::ops::RangeInclusive;
 
 use serde::{Deserialize, Serialize};
 
+use crate::line_char_nums::{LineCharNums, LineNum};
 use crate::data_repr::IntegerRepr;
-use crate::source_chars::{CharError, CharLoc, CharResult, SourceCharReadResult};
+use crate::source_chars::{CharError, CharResult};
 use crate::util::{fs_shl, one_shl, u128_ch_bit_test};
 
 fn is_punctuation_single_char(ch: char) -> bool {
@@ -82,23 +83,43 @@ pub enum Token {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TokenInfo {
-    pub span: [CharLoc; 2],
+    pub linechar_range: RangeInclusive<LineCharNums>,
     pub token: Token,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum LexError {
-    UnexpectedEof { char_loc_start: CharLoc },
-    UnexpectedChar(char),
+    UnexpectedEof {
+        // The file offset that could not be read.
+        fo: u64,
+        // The last line number and char number that was successfully read.
+        line_char_last: LineCharNums,
+    },
+
+    UnexpectedChar {
+        ch: char,
+        fo: u64,
+        len: u8,
+        line_char: LineCharNums,
+    },
+
     UnexpectedCharResult(CharResult),
+
     Todo,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum LexResult {
     Token(TokenInfo),
-    Eod { loc: CharLoc },
-    Error { loc: CharLoc, lex_error: LexError },
+
+    Eod {
+        // Total size of the file.
+        file_size: u64,
+        // Last line number of the file.
+        last_line: LineNum,
+    },
+
+    Error(LexError),
 }
 
 impl LexResult {
@@ -114,19 +135,19 @@ impl LexResult {
 }
 
 struct Lexer<'a> {
-    source_chars: &'a mut dyn Iterator<Item = SourceCharReadResult>,
-    read_results: [SourceCharReadResult; 3],
+    source_chars: &'a mut dyn Iterator<Item = CharResult>,
+    read_results: [CharResult; 3],
     yielded_final: bool,
 }
 
 impl<'a> Lexer<'a> {
-    pub fn new(source_chars: &'a mut dyn Iterator<Item = SourceCharReadResult>) -> Self {
+    pub fn new(source_chars: &'a mut dyn Iterator<Item = CharResult>) -> Self {
         let mut self_ = Self {
             source_chars,
             read_results: [
-                SourceCharReadResult::default_error(),
-                SourceCharReadResult::default_error(),
-                SourceCharReadResult::default_error(),
+                CharResult::default_error(),
+                CharResult::default_error(),
+                CharResult::default_error(),
             ],
             yielded_final: false,
         };
@@ -137,19 +158,19 @@ impl<'a> Lexer<'a> {
 
     // Convenient access to the char just consumed read result
     #[inline]
-    fn prev_read_result(&self) -> &SourceCharReadResult {
+    fn prev_read_result(&self) -> &CharResult {
         &self.read_results[0]
     }
 
     // Convenient access to the current char read result
     #[inline]
-    fn cur_read_result(&self) -> &SourceCharReadResult {
+    fn cur_read_result(&self) -> &CharResult {
         &self.read_results[1]
     }
 
     // Convenient access to the next char read result
     #[inline]
-    fn peek_next_read_result(&self) -> &SourceCharReadResult {
+    fn peek_next_read_result(&self) -> &CharResult {
         &self.read_results[2]
     }
 
@@ -174,8 +195,8 @@ impl<'a> Lexer<'a> {
         } else if self.cur_read_result().is_eof() || self.cur_read_result().is_error() {
             self.cur_read_result().clone()
         } else {
-            SourceCharReadResult::default_error()
-        }
+            CharResult::default_error()
+        };
     }
 
     /// Consumes the current char.
@@ -203,10 +224,9 @@ impl<'a> Lexer<'a> {
         if cur_read_result.is_char_or_eol() {
             None
         } else {
-            Some(LexResult::Error {
-                loc: cur_read_result.loc.clone(),
-                lex_error: LexError::UnexpectedCharResult(cur_read_result.char_result.clone()),
-            })
+            Some(LexResult::Error(LexError::UnexpectedCharResult(
+                cur_read_result.clone(),
+            )))
         }
     }
 
@@ -215,125 +235,132 @@ impl<'a> Lexer<'a> {
         eprintln!("Lexer::lex_initial()");
 
         match self.cur_read_result() {
-            SourceCharReadResult {
-                loc,
-                char_result: CharResult::Char(ch),
-            } => match *ch {
-                ch if ch.is_whitespace() => {
+            CharResult::Char {
+                ch,
+                fo,
+                len,
+                line_char,
+            } => {
+                let (ch, fo, len, line_char) = (*ch, *fo, *len, *line_char);
+                if ch.is_whitespace() {
                     self.consume_char();
                     None
-                }
-                ch if is_comment_first_char(ch) => self.lex_comment_first_char(),
-                ch if is_punctuation_single_char(ch) => Some(self.lex_punctuation_single_char()),
-                ch if is_decimal_digit(ch) => Some(self.lex_literal_digit()),
-
-                // Every other char is unexpected
-                ch => {
+                } else if is_comment_first_char(ch) {
+                    self.lex_comment_first_char(ch, line_char)
+                } else if is_punctuation_single_char(ch) {
+                    self.lex_punctuation_single_char(ch, line_char)
+                } else if is_decimal_digit(ch) {
+                    self.lex_literal_digit(ch, line_char)
+                } else {
+                    // Every other char is unexpected
                     // Don't consume
-                    Some(LexResult::Error {
-                        loc: loc.clone(),
-                        lex_error: LexError::UnexpectedChar(ch),
-                    })
+                    Some(LexResult::Error(LexError::UnexpectedChar {
+                        ch,
+                        fo,
+                        len,
+                        line_char,
+                    }))
                 }
-            },
-            SourceCharReadResult {
-                char_result: CharResult::Eol,
-                ..
-            } => {
+            }
+            CharResult::Eol { .. } => {
                 self.consume_char();
                 None
             }
-            SourceCharReadResult {
-                loc,
-                char_result: CharResult::Eof,
+            CharResult::Eof {
+                file_size,
+                last_line,
             } => {
                 // Don't consume
-                Some(LexResult::Eod { loc: loc.clone() })
-            }
-            SourceCharReadResult { loc, char_result } => {
-                // Don't consume
-                Some(LexResult::Error {
-                    loc: loc.clone(),
-                    lex_error: LexError::UnexpectedCharResult(char_result.clone()),
+                Some(LexResult::Eod {
+                    file_size: *file_size,
+                    last_line: *last_line,
                 })
             }
+            char_result => Some(LexResult::Error(LexError::UnexpectedCharResult(
+                char_result.clone(),
+            ))),
         }
     }
 
     /// Lexes a punctuation token comprised of a single char.
-    fn lex_punctuation_single_char(&mut self) -> LexResult {
-        let first_char_loc = self.cur_read_result().loc.clone();
-
-        let mut last_char_loc = first_char_loc.clone();
-        let mut ch = self.cur_read_result().char_or_nul();
-        assert!(is_punctuation_single_char(ch));
+    fn lex_punctuation_single_char(
+        &mut self,
+        ch: char,
+        line_char: LineCharNums,
+    ) -> Option<LexResult> {
+        assert!(is_punctuation_single_char(ch) || is_comment_first_char(ch));
 
         self.consume_char();
 
-        LexResult::Token(TokenInfo {
-            span: [first_char_loc, last_char_loc],
+        Some(LexResult::Token(TokenInfo {
+            linechar_range: line_char..=line_char,
             token: Token::PunctuationSingleChar(ch),
-        })
+        }))
     }
 
-    fn lex_comment_first_char(&mut self) -> Option<LexResult> {
-        assert!(is_comment_first_char(self.cur_read_result().char_or_nul()));
-        let first_char_loc = self.cur_read_result().loc.clone();
+    fn lex_comment_first_char(
+        &mut self,
+        mut ch: char,
+        line_char: LineCharNums,
+    ) -> Option<LexResult> {
+        assert!(is_comment_first_char(ch));
+        let first_line_char = line_char;
 
-        // Consume first '/'
-        self.consume_char();
-
-        let ch = self.cur_read_result().char_or_nul();
-
-        if ch == '/' {
-            // Consume second '/' and any following chars
-            loop {
+        // Peek at the next char of the "//"" or "/*"" sequence
+        match self.peek_next_read_result().char_or_nul() {
+            '/' => {
+                // Consume first '/'
                 self.consume_char();
 
-                if !self.cur_read_result().is_char() {
-                    return None;
+                // Consume second '/' and any following chars
+                loop {
+                    self.consume_char();
+
+                    if !self.cur_read_result().is_char() {
+                        return None;
+                    }
                 }
             }
-        } else if ch == '*' {
-            let mut state = 0usize;
-            loop {
-                // Consume '*' and any following chars through "*/"
+            '*' => {
+                // Consume first '/'
                 self.consume_char();
 
-                if state == 2 {
-                    return None; // Success
-                }
+                // Consume '*' and any following chars
+                loop {
+                    let mut state = 0usize;
+                    loop {
+                        // Consume '*' and any following chars through "*/"
+                        self.consume_char();
 
-                if !self.cur_read_result().is_char_or_eol() {
-                    return None; // Some kind of problem. Let the outer loop find it.
-                }
+                        if state == 2 {
+                            return None; // Success
+                        }
 
-                state = match (state, self.cur_read_result().char_or_nul()) {
-                    (0, '*') => 1,
-                    (1, '/') => 2,
-                    _ => 0,
-                };
+                        if !self.cur_read_result().is_char_or_eol() {
+                            return None; // Some kind of problem. Let the outer loop find it.
+                        }
+
+                        state = match (state, self.cur_read_result().char_or_nul()) {
+                            (0, '*') => 1,
+                            (1, '/') => 2,
+                            _ => 0,
+                        };
+                    }
+                }
             }
-        } else {
-            // Don't consume it
-
-            // Just return it as a Token::PunctuationSingleChar(ch).
-            let last_char_loc = first_char_loc.clone();
-
-            Some(LexResult::Token(TokenInfo {
-                span: [first_char_loc, last_char_loc],
-                token: Token::PunctuationSingleChar('/'),
-            }))
+            _ => {
+                // Don't consume first '/', just delegate to punctuation single char
+                self.lex_punctuation_single_char(ch, line_char)
+            }
         }
     }
 
-    fn lex_literal_digit(&mut self) -> LexResult {
-        assert!(is_decimal_digit(self.cur_read_result().char_or_nul()));
+    fn lex_literal_digit(&mut self, mut ch: char, line_char: LineCharNums) -> Option<LexResult> {
+        assert!(is_decimal_digit(ch));
 
-        let first_char_loc = self.cur_read_result().loc.clone();
+        let first_line_char = line_char;
 
-        let mut last_char_loc = self.cur_read_result().loc.clone();
-        let mut ch = self.cur_read_result().char_or_nul();
+        let mut last_line_char = line_char;
         let mut i: i128 = decimal_digit_val(ch).into();
 
         'more_digits: loop {
@@ -347,13 +374,14 @@ impl<'a> Lexer<'a> {
             i *= 10;
             i += i128::from(decimal_digit_val(ch));
 
-            last_char_loc = self.cur_read_result().loc.clone();
+            // `.unwrap()` should be justified because ch is known to be a decimal digit.
+            last_line_char = self.cur_read_result().opt_line_char().unwrap();
         } // 'more_digits
 
-        LexResult::Token(TokenInfo {
-            span: [first_char_loc, last_char_loc],
+        Some(LexResult::Token(TokenInfo {
+            linechar_range: first_line_char..=last_line_char,
             token: Token::LiteralInteger(IntegerRepr::I128(i)),
-        })
+        }))
     }
 }
 

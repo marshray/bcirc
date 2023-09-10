@@ -12,6 +12,7 @@
 
 mod data_repr;
 mod lexer;
+mod line_char_nums;
 mod source_bytes;
 mod source_chars;
 mod util;

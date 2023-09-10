@@ -3,147 +3,73 @@ source: src/source_chars.rs
 input_file: src/test_data/source_chars/mixed_line_endings.bin
 ---
 [
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 0,
-        end: 0,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('a'),
+  Char(
+    ch: 'a',
+    fo: 0,
+    len: 1,
+    line_char: LineCharNums((1, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 1,
-        end: 1,
-      ),
-      line_n: LineNumberOneBased(1),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 1,
+    len: 1,
+    line_char: LineCharNums((1, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 2,
-        end: 2,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('b'),
+  Char(
+    ch: 'b',
+    fo: 2,
+    len: 1,
+    line_char: LineCharNums((2, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 3,
-        end: 3,
-      ),
-      line_n: LineNumberOneBased(2),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 3,
+    len: 2,
+    line_char: LineCharNums((2, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 5,
-        end: 5,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('c'),
+  Char(
+    ch: 'c',
+    fo: 5,
+    len: 1,
+    line_char: LineCharNums((3, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 6,
-        end: 6,
-      ),
-      line_n: LineNumberOneBased(3),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 6,
+    len: 1,
+    line_char: LineCharNums((3, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 7,
-        end: 7,
-      ),
-      line_n: LineNumberOneBased(4),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 7,
+    len: 2,
+    line_char: LineCharNums((4, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 9,
-        end: 9,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('d'),
+  Char(
+    ch: 'd',
+    fo: 9,
+    len: 1,
+    line_char: LineCharNums((5, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 10,
-        end: 10,
-      ),
-      line_n: LineNumberOneBased(5),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 10,
+    len: 1,
+    line_char: LineCharNums((5, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 11,
-        end: 11,
-      ),
-      line_n: LineNumberOneBased(6),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 11,
+    len: 1,
+    line_char: LineCharNums((6, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 12,
-        end: 12,
-      ),
-      line_n: LineNumberOneBased(7),
-      char_n: CharNumberOneBased(1),
-    ),
-    char_result: Char('e'),
+  Char(
+    ch: 'e',
+    fo: 12,
+    len: 1,
+    line_char: LineCharNums((7, 1)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 13,
-        end: 13,
-      ),
-      line_n: LineNumberOneBased(7),
-      char_n: CharNumberOneBased(2),
-    ),
-    char_result: Eol,
+  Eol(
+    fo: 13,
+    len: 0,
+    line_char: LineCharNums((7, 2)),
   ),
-  SourceCharReadResult(
-    loc: CharLoc(
-      fo_range: RangeInclusive(
-        start: 13,
-        end: 13,
-      ),
-      line_n: LineNumberOneBased(7),
-      char_n: CharNumberOneBased(3),
-    ),
-    char_result: Eof,
+  Eof(
+    file_size: 13,
+    last_line: LineNum(6),
   ),
 ]
