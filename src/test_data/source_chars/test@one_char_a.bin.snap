@@ -7,12 +7,12 @@ input_file: src/test_data/source_chars/one_char_a.bin
     ch: 'a',
     fo: 0,
     len: 1,
-    line_char: LineCharNums((1, 1)),
+    linecharnum: LineCharNums((1, 1)),
   ),
   Eol(
     fo: 1,
     len: 0,
-    line_char: LineCharNums((1, 2)),
+    linecharnum: LineCharNums((1, 2)),
   ),
   Eof(
     file_size: 1,

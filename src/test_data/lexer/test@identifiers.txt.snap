@@ -1,0 +1,38 @@
+---
+source: src/lexer.rs
+input_file: src/test_data/lexer/identifiers.txt
+---
+[
+  Token(TokenInfo(
+    linechar_range: RangeInclusive(
+      start: LineCharNums((1, 1)),
+      end: LineCharNums((1, 1)),
+    ),
+    token: Identifier("a"),
+  )),
+  Token(TokenInfo(
+    linechar_range: RangeInclusive(
+      start: LineCharNums((2, 1)),
+      end: LineCharNums((2, 2)),
+    ),
+    token: Identifier("b2"),
+  )),
+  Token(TokenInfo(
+    linechar_range: RangeInclusive(
+      start: LineCharNums((3, 1)),
+      end: LineCharNums((3, 2)),
+    ),
+    token: Identifier("c_"),
+  )),
+  Token(TokenInfo(
+    linechar_range: RangeInclusive(
+      start: LineCharNums((4, 1)),
+      end: LineCharNums((4, 3)),
+    ),
+    token: Identifier("d_5"),
+  )),
+  Eod(
+    file_size: 16,
+    last_line: LineNum(4),
+  ),
+]

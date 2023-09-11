@@ -88,6 +88,11 @@ impl LineCharNums {
         Self([1; 2])
     }
 
+    /// Returns (line, char) number (u64::MAX, u64::MAX), for use as an implausible default value.
+    pub const fn max_max() -> Self {
+        Self([u64::MAX; 2])
+    }
+
     /// Returns the (one-based) line number.
     pub fn line(&self) -> LineNum {
         LineNum(self.0[0])
@@ -99,14 +104,27 @@ impl LineCharNums {
     }
 
     /// Increments the line number, resets the char number to 1.
-    pub fn inc_line(&mut self) {
-        assert_ne!(self.0[0], LineNum::MAX_U64);
-        self.0 = [self.0[0] + 1, 1];
+    pub fn inc_line(&mut self) -> Self {
+        self.0[0] = self.0[0].saturating_add(1);
+        self.0[1] = 1;
+        *self
     }
-
+    
     /// Increments the char number. Does not affect the line number.
-    pub fn inc_char(&mut self) {
-        assert_ne!(self.0[1], CharNum::MAX_U64);
-        self.0[1] += 1;
+    pub fn inc_char(&mut self) -> Self {
+        self.0[1] = self.0[1].saturating_add(1);
+        *self
+    }
+    
+    /// Returns the result of adding one to the line number and resetting the char number to 1.
+    #[allow(dead_code)]
+    pub fn plus_one_line(&self) -> Self {
+        self.clone().inc_line()
+    }
+    
+    /// Returns the result of adding one to the char number without affecting the line number.
+    #[allow(dead_code)]
+    pub fn plus_one_char(&self) -> Self {
+        self.clone().inc_char()
     }
 }

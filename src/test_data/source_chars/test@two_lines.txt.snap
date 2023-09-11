@@ -7,23 +7,23 @@ input_file: src/test_data/source_chars/two_lines.txt
     ch: 'a',
     fo: 0,
     len: 1,
-    line_char: LineCharNums((1, 1)),
+    linecharnum: LineCharNums((1, 1)),
   ),
   Eol(
     fo: 1,
     len: 2,
-    line_char: LineCharNums((1, 2)),
+    linecharnum: LineCharNums((1, 2)),
   ),
   Char(
     ch: 'b',
     fo: 3,
     len: 1,
-    line_char: LineCharNums((2, 1)),
+    linecharnum: LineCharNums((2, 1)),
   ),
   Eol(
     fo: 4,
     len: 2,
-    line_char: LineCharNums((2, 2)),
+    linecharnum: LineCharNums((2, 2)),
   ),
   Eof(
     file_size: 6,

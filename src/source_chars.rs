@@ -35,6 +35,9 @@ pub enum CharError {
 
     /// A `[std::io::Error]` was encountered.
     StdIoError(String),
+
+    /// Unspecified error.
+    Unspecified,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -43,13 +46,13 @@ pub enum CharResult {
         ch: char,
         fo: u64,
         len: u8,
-        line_char: LineCharNums,
+        linecharnum: LineCharNums,
     },
 
     Eol {
         fo: u64,
         len: u8,
-        line_char: LineCharNums,
+        linecharnum: LineCharNums,
     },
 
     Eof {
@@ -63,33 +66,44 @@ pub enum CharResult {
     Error {
         ce: CharError,
         fo: u64,
-        line_char: LineCharNums,
+        linecharnum: LineCharNums,
     },
 }
 
 impl CharResult {
-    /// Returns if the result is a valid Eol.
+    /// Returns a default error value.
     pub fn default_error() -> CharResult {
-        CharResult::Eol {
-            fo: 0,
-            len: 0,
-            line_char: LineCharNums::one_one(),
+        CharResult::Error {
+            ce: CharError::Unspecified,
+            fo: u64::MAX,
+            linecharnum: LineCharNums::max_max(),
         }
     }
-
-    /* /// Returns if the result is a valid Eol.
+    
+    /// Returns if the result is a valid Eol.
     pub fn is_eol(&self) -> bool {
         matches!(*self, CharResult::Eol { .. })
-    } */
+    }
 
-    /// Returns if the result is a valid Eof.
+    /// Returns if the result is a Eof.
+    #[allow(dead_code)]
     pub fn is_eof(&self) -> bool {
         matches!(*self, CharResult::Eof { .. })
     }
-
+    
     /// Returns if the result is an error.
+    #[allow(dead_code)]
     pub fn is_error(&self) -> bool {
         matches!(*self, CharResult::Error { .. })
+    }
+
+    /// Returns true if the result is considered whitespace
+    /// either a whitespace char or Eol result.
+    pub fn is_whitespace(&self) -> bool {
+        matches_any!{*self,
+            CharResult::Char { ch, .. } if ch.is_whitespace(),
+            CharResult::Eol { .. }
+        }
     }
 
     /// Returns if the result is a char.
@@ -119,12 +133,12 @@ impl CharResult {
         matches!(*self, CharResult::Char { ch, .. } if is_cr_or_lf(ch))
     }
 
-    /// Returns the line_char field, if this variant has one.
-    pub fn opt_line_char(&self) -> Option<LineCharNums> {
+    /// Returns the linecharnum field, if this variant has one.
+    pub fn opt_linecharnums(&self) -> Option<LineCharNums> {
         match self {
-            CharResult::Char { line_char, .. } => Some(*line_char),
-            CharResult::Eol { line_char, .. } => Some(*line_char),
-            CharResult::Error { line_char, .. } => Some(*line_char),
+            CharResult::Char { linecharnum, .. } => Some(*linecharnum),
+            CharResult::Eol { linecharnum, .. } => Some(*linecharnum),
+            CharResult::Error { linecharnum, .. } => Some(*linecharnum),
             _ => None,
         }
     }
@@ -142,7 +156,7 @@ pub fn source_chars(
         let mut utf8_buf_len = 0u8;
         let mut need_more_bytes_for_this_char = false;
 
-        let line_char = LineCharNums::one_one();
+        let linecharnum = LineCharNums::max_max();
 
         std::iter::from_generator(move || {
             'for_source_bytes: for source_byte_read_result in source_bytes {
@@ -191,7 +205,7 @@ pub fn source_chars(
                                                     len: utf8_buf_len,
                                                 },
                                                 fo: fo_byte,
-                                                line_char,
+                                                linecharnum,
                                             };
                                             break 'for_source_bytes;
                                         }
@@ -204,7 +218,7 @@ pub fn source_chars(
                             ch,
                             fo: char_fo_start,
                             len: utf8_buf_len,
-                            line_char,
+                            linecharnum,
                         };
                     } // ByteOrEof::Byte
 
@@ -213,7 +227,7 @@ pub fn source_chars(
                             yield CharResult::Error {
                                 ce: CharError::UnexpectedEof { len: utf8_buf_len },
                                 fo: char_fo_start,
-                                line_char,
+                                linecharnum,
                             };
                         } else {
                             yield CharResult::Eof {
@@ -227,7 +241,7 @@ pub fn source_chars(
                         yield CharResult::Error {
                             ce: CharError::StdIoError(err_str),
                             fo: fo_byte,
-                            line_char,
+                            linecharnum,
                         };
                     }
                 }
@@ -280,10 +294,10 @@ pub fn source_chars(
                     ch: ch @ '\r' | ch @ '\n',
                     fo,
                     len,
-                    line_char,
+                    linecharnum,
                 } = this_char_result
                 {
-                    this_char_result = CharResult::Eol { fo, len, line_char };
+                    this_char_result = CharResult::Eol { fo, len, linecharnum };
 
                     if ch == '\r' {
                         // Defer CR
@@ -306,17 +320,17 @@ pub fn source_chars(
 
         for mut char_result in iter_2 {
             match &mut char_result {
-                CharResult::Char { line_char, .. } => {
-                    *line_char = lc;
+                CharResult::Char { linecharnum, .. } => {
+                    *linecharnum = lc;
 
                     // Advance to next char
                     lc.inc_char();
                 }
-                CharResult::Eol { line_char, .. } => {
+                CharResult::Eol { linecharnum, .. } => {
                     // There was an Eol
                     ll = lc.line();
 
-                    *line_char = lc;
+                    *linecharnum = lc;
 
                     // Advance to next line
                     lc.inc_line();
@@ -330,14 +344,14 @@ pub fn source_chars(
                     // Ensure we have an Eol before Eof.
                     if !lc.char().is_one() {
                         yield CharResult::Eol {
-                            line_char: lc,
+                            linecharnum: lc,
                             fo: *file_size,
                             len: 0,
                         };
                     }
                 }
-                CharResult::Error { line_char, .. } => {
-                    *line_char = lc;
+                CharResult::Error { linecharnum, .. } => {
+                    *linecharnum = lc;
                 }
             }
 
