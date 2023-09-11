@@ -11,7 +11,7 @@
 #![feature(return_position_impl_trait_in_trait)]
 
 mod data_repr;
-mod lexer;
+mod tokenizer;
 mod line_char_nums;
 mod source_bytes;
 mod source_chars;

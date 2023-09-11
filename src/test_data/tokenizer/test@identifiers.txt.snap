@@ -1,6 +1,6 @@
 ---
-source: src/lexer.rs
-input_file: src/test_data/lexer/identifiers.txt
+source: src/tokenizer.rs
+input_file: src/test_data/tokenizer/identifiers.txt
 ---
 [
   Token(TokenInfo(

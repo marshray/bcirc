@@ -90,7 +90,7 @@ pub struct TokenInfo {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum LexError {
+pub enum TokError {
     UnexpectedEof {
         // The file offset that could not be read.
         fo: u64,
@@ -111,7 +111,7 @@ pub enum LexError {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum LexResult {
+pub enum TokResult {
     Token(TokenInfo),
 
     Eod {
@@ -121,28 +121,28 @@ pub enum LexResult {
         last_line: LineNum,
     },
 
-    Error(LexError),
+    Error(TokError),
 }
 
-impl LexResult {
+impl TokResult {
     pub fn is_eod(&self) -> bool {
-        matches!(self, &LexResult::Eod { .. })
+        matches!(self, &TokResult::Eod { .. })
     }
     
     pub fn is_error(&self) -> bool {
-        matches!(self, &LexResult::Error(_))
+        matches!(self, &TokResult::Error(_))
     }
     
     pub fn is_final(&self) -> bool {
         // Anything other than a token is final
-        !matches!(self, &LexResult::Token(_))
+        !matches!(self, &TokResult::Token(_))
     }
 
     fn is_following_whitespace_significant(&self) -> bool {
         // Whitespace is only relevant immediately after + and - tokens.
         matches!(
             self,
-            &LexResult::Token(TokenInfo {
+            &TokResult::Token(TokenInfo {
                 token: Token::PunctuationSingleChar('+' | '-'),
                 ..
             })
@@ -156,7 +156,7 @@ enum MaybeCharResult {
     PastEofCount(usize),
 }
 
-struct Lexer<'a> {
+struct Tokenizer<'a> {
     bx_source_chars: Box<dyn Iterator<Item = MaybeCharResult> + 'a>,
     charresults: [CharResult; 3],
     linecharnumses: [LineCharNums; 3],
@@ -173,7 +173,7 @@ macro_rules! consume_char {
     }};
     (@common, $eol_is_edible:expr, $self:ident, $name:ident) => {
         // #[rustfmt::skip]
-        // eprintln!("Lexer::{}() consuming {:?}", stringify!($name), $self.cur_charresult());
+        // eprintln!("Tokenizer::{}() consuming {:?}", stringify!($name), $self.cur_charresult());
 
         assert!(
                 ($eol_is_edible && $self.cur_charresult().is_eol())
@@ -182,7 +182,7 @@ macro_rules! consume_char {
     };
 }
 
-impl<'a> Lexer<'a> {
+impl<'a> Tokenizer<'a> {
     pub fn new(source_chars: &'a mut dyn Iterator<Item = CharResult>) -> Self {
         // Set up source_chars to give a count sequence after the end.
         let past_end = (0..=usize::MAX).map(MaybeCharResult::PastEofCount);
@@ -242,7 +242,7 @@ impl<'a> Lexer<'a> {
     }
 
     /// Call this to consume a char.
-    /// You don't have to call this if you're returning LexResult::is_final() (i.e., something other
+    /// You don't have to call this if you're returning TokResult::is_final() (i.e., something other
     /// than a token).
     fn consume_char(&mut self) {
         self.charresults.rotate_left(1);
@@ -266,7 +266,7 @@ impl<'a> Lexer<'a> {
 
     /// Consumes the current char.
     /// Returns None if the new read_result is Char or Eol.
-    /// Otherwise, returns an appropriate LexResult.
+    /// Otherwise, returns an appropriate TokResult.
     ///
     /// Call this when you need to advance to the next char in order to probably use it.
     /// But if you're simply advancing past the last char you are consuming, then
@@ -274,29 +274,29 @@ impl<'a> Lexer<'a> {
     ///
     /// Actually, since all tokens end on non-chars, you probably never need this.
     ///
-    // fn consume_char_expecting_char_or_eol(&mut self) -> Option<LexResult> {
+    // fn consume_char_expecting_char_or_eol(&mut self) -> Option<TokResult> {
     //     self.consume_char();
-    //     self.lexerror_unless_cur_char_or_eol()
+    //     self.tokerror_unless_cur_char_or_eol()
     // }
 
     /// Returns None if the cur_read_result is Char or Eol.
-    /// Otherwise, returns an appropriate LexResult.
+    /// Otherwise, returns an appropriate TokResult.
     ///
     /// Call this before you need to interpret the current read_result as a char.
     ///
-    fn lexerror_unless_cur_char_or_eol(&self) -> Option<LexResult> {
+    fn tokerror_unless_cur_char_or_eol(&self) -> Option<TokResult> {
         let cur_read_result = self.cur_charresult();
         if cur_read_result.is_char_or_eol() {
             None
         } else {
-            Some(LexResult::Error(LexError::UnexpectedCharResult(
+            Some(TokResult::Error(TokError::UnexpectedCharResult(
                 cur_read_result.clone(),
             )))
         }
     }
 
-    /// Lexes the next token (or other result) from the initial state.
-    fn lex_initial(&mut self) -> Option<LexResult> {
+    /// Tokes the next token (or other result) from the initial state.
+    fn tok_initial(&mut self) -> Option<TokResult> {
         let cur_read_result = self.cur_charresult();
 
         match cur_read_result {
@@ -309,19 +309,19 @@ impl<'a> Lexer<'a> {
                 let (ch, fo, len, linecharnum) = (*ch, *fo, *len, *linecharnum);
 
                 if ch.is_whitespace() {
-                    self.lex_whitespace(linecharnum)
+                    self.tok_whitespace(linecharnum)
                 } else if is_comment_first_char(ch) {
-                    self.lex_comment_first_char(linecharnum)
+                    self.tok_comment_first_char(linecharnum)
                 } else if is_punctuation_single_char(ch) {
-                    self.lex_punctuation_single_char(linecharnum)
+                    self.tok_punctuation_single_char(linecharnum)
                 } else if is_decimal_digit(ch) {
-                    self.lex_numeric_literal(linecharnum)
+                    self.tok_numeric_literal(linecharnum)
                 } else if is_identifier_first_char(ch) {
-                    self.lex_identifier()
+                    self.tok_identifier()
                 } else {
                     // Every other char is unexpected
                     // Don't consume
-                    Some(LexResult::Error(LexError::UnexpectedChar {
+                    Some(TokResult::Error(TokError::UnexpectedChar {
                         ch,
                         fo,
                         len,
@@ -330,34 +330,34 @@ impl<'a> Lexer<'a> {
                 }
             }
             CharResult::Eol { linecharnum, .. } => {
-                self.lex_whitespace(*linecharnum)
+                self.tok_whitespace(*linecharnum)
             }
             CharResult::Eof {
                 file_size,
                 last_line,
             } => {
                 // Don't consume
-                Some(LexResult::Eod {
+                Some(TokResult::Eod {
                     file_size: *file_size,
                     last_line: *last_line,
                 })
             }
             char_result => {
-                //eprintln!("lex: char_result = {char_result:?}");
+                //eprintln!("tok: char_result = {char_result:?}");
 
-                Some(LexResult::Error(LexError::UnexpectedCharResult(
+                Some(TokResult::Error(TokError::UnexpectedCharResult(
                     char_result.clone(),
                 )))
             }
         }
     }
 
-    /// Lexes whitespace.
-    fn lex_whitespace(&mut self, first_linecharnums: LineCharNums) -> Option<LexResult> {
+    /// Tokes whitespace.
+    fn tok_whitespace(&mut self, first_linecharnums: LineCharNums) -> Option<TokResult> {
         debug_assert!(self.cur_charresult().is_whitespace());
 
         loop {
-            consume_char!(eol_is_edible; self, lex_whitespace);
+            consume_char!(eol_is_edible; self, tok_whitespace);
 
             if !self.cur_charresult().is_whitespace() {
                 break;
@@ -369,7 +369,7 @@ impl<'a> Lexer<'a> {
 
     /// Returns a whitespace token if that's significant here.
     /// Prev read result should be a whitespace char
-    fn whitespace_if_significant(&mut self, first_linecharnums: LineCharNums) -> Option<LexResult> {
+    fn whitespace_if_significant(&mut self, first_linecharnums: LineCharNums) -> Option<TokResult> {
         if !self.prev_yielded_wants_whitespace {
             return None;
         }
@@ -379,97 +379,97 @@ impl<'a> Lexer<'a> {
             .opt_linecharnums()
             .unwrap_or(first_linecharnums);
 
-        Some(LexResult::Token(TokenInfo {
+        Some(TokResult::Token(TokenInfo {
             linechar_range: first_linecharnums..=last_linecharnums,
             token: Token::Whitespace,
         }))
     }
 
-    /// Lexes a punctuation token comprised of a single char.
-    fn lex_punctuation_single_char(
+    /// Tokes a punctuation token comprised of a single char.
+    fn tok_punctuation_single_char(
         &mut self,
         linecharnum: LineCharNums,
-    ) -> Option<LexResult> {
-        let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-        if opt_lexerror.is_some() { return opt_lexerror; }
+    ) -> Option<TokResult> {
+        let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+        if opt_tokerror.is_some() { return opt_tokerror; }
 
         let ch = self.cur_charresult().char_or_nul();
 
         if !(is_punctuation_single_char(ch) || is_comment_first_char(ch)) {
-            return Some(LexResult::Error(LexError::InternalError));
+            return Some(TokResult::Error(TokError::InternalError));
         }
 
-        consume_char!(self, lex_punctuation_single_char);
+        consume_char!(self, tok_punctuation_single_char);
 
-        Some(LexResult::Token(TokenInfo {
+        Some(TokResult::Token(TokenInfo {
             linechar_range: linecharnum..=linecharnum,
             token: Token::PunctuationSingleChar(ch),
         }))
     }
 
-    /// Lexes a token that starts with '/'.
-    fn lex_comment_first_char(
+    /// Tokes a token that starts with '/'.
+    fn tok_comment_first_char(
         &mut self,
         first_linecharnums: LineCharNums,
-    ) -> Option<LexResult> {
-        let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-        if opt_lexerror.is_some() { return opt_lexerror; }
+    ) -> Option<TokResult> {
+        let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+        if opt_tokerror.is_some() { return opt_tokerror; }
 
         assert!(is_comment_first_char(self.cur_charresult().char_or_nul()));
 
         // Peek at the next char of the "//"" or "/*" sequence
         match self.peek_next_charresult().char_or_nul() {
-            '/' => self.lex_line_comment(first_linecharnums),
-            '*' => self.lex_block_comment(first_linecharnums),
-            _ => self.lex_punctuation_single_char(first_linecharnums),
+            '/' => self.tok_line_comment(first_linecharnums),
+            '*' => self.tok_block_comment(first_linecharnums),
+            _ => self.tok_punctuation_single_char(first_linecharnums),
         }
     }
 
-    fn lex_line_comment(
+    fn tok_line_comment(
         &mut self,
         first_linecharnums: LineCharNums,
-    ) -> Option<LexResult> {
+    ) -> Option<TokResult> {
         // Consume the two slashes promised to us by the caller.
         let mut cnt_slashes = 0_usize;
         while cnt_slashes < 2 {
-            let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-            if opt_lexerror.is_some() { return opt_lexerror; }
+            let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+            if opt_tokerror.is_some() { return opt_tokerror; }
 
             let ch = self.cur_charresult().char_or_nul();
             if ch == '/' {
                 cnt_slashes += 1;
             } else {
-                return Some(LexResult::Error(LexError::InternalError));
+                return Some(TokResult::Error(TokError::InternalError));
             }
 
-            consume_char!(self, lex_line_comment);
+            consume_char!(self, tok_line_comment);
         }
 
         // Consume up to the Eol
         loop {
-            let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-            if opt_lexerror.is_some() { return opt_lexerror; }
+            let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+            if opt_tokerror.is_some() { return opt_tokerror; }
 
             if self.cur_charresult().is_eol() {
                 break;
             }
 
-            consume_char!(self, lex_line_comment);
+            consume_char!(self, tok_line_comment);
         }
 
         self.whitespace_if_significant(first_linecharnums)
     }
 
-    fn lex_block_comment(
+    fn tok_block_comment(
         &mut self,
         first_linecharnums: LineCharNums,
-    ) -> Option<LexResult> {
+    ) -> Option<TokResult> {
         const CHAR_SEQ: [char; 4] = ['/', '*', '*', '/'];
 
         let mut state = 0_usize;
         while state != CHAR_SEQ.len() {
-            let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-            if opt_lexerror.is_some() { return opt_lexerror; }
+            let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+            if opt_tokerror.is_some() { return opt_tokerror; }
 
             if self.cur_charresult().char_or_nul() == CHAR_SEQ[state] {
                 state += 1;
@@ -477,26 +477,26 @@ impl<'a> Lexer<'a> {
                 // We didn't get the char we were hoping for. But those first two should have
                 // been guaranteed by the caller.
                 if state < 2 {
-                    return Some(LexResult::Error(LexError::InternalError));
+                    return Some(TokResult::Error(TokError::InternalError));
                 }
 
                 // Later char positions just restart at state 2.
                 state = 2;
             }
 
-            consume_char!(eol_is_edible; self, lex_block_comment);
+            consume_char!(eol_is_edible; self, tok_block_comment);
         }
 
         self.whitespace_if_significant(first_linecharnums)
     }
 
-    fn lex_numeric_literal(&mut self, linecharnum: LineCharNums) -> Option<LexResult> {
-        let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-        if opt_lexerror.is_some() { return opt_lexerror; }
+    fn tok_numeric_literal(&mut self, linecharnum: LineCharNums) -> Option<TokResult> {
+        let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+        if opt_tokerror.is_some() { return opt_tokerror; }
 
         let mut ch = self.cur_charresult().char_or_nul();
         if !is_decimal_digit(ch) {
-            return Some(LexResult::Error(LexError::InternalError));
+            return Some(TokResult::Error(TokError::InternalError));
         }
 
         let first_linecharnums = self.cur_linecharnums();
@@ -505,10 +505,10 @@ impl<'a> Lexer<'a> {
         let mut i: i128 = decimal_digit_val(ch).into();
 
         'more_digits: loop {
-            consume_char!(self, lex_numeric_literal);
+            consume_char!(self, tok_numeric_literal);
 
-            let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-            if opt_lexerror.is_some() { return opt_lexerror; }
+            let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+            if opt_tokerror.is_some() { return opt_tokerror; }
     
             ch = self.cur_charresult().char_or_nul();
             if !is_decimal_digit(ch) {
@@ -522,19 +522,19 @@ impl<'a> Lexer<'a> {
             last_linecharnums = self.cur_charresult().opt_linecharnums().unwrap();
         } // 'more_digits
 
-        Some(LexResult::Token(TokenInfo {
+        Some(TokResult::Token(TokenInfo {
             linechar_range: first_linecharnums..=last_linecharnums,
             token: Token::LiteralInteger(IntegerRepr::I128(i)),
         }))
     }
 
-    fn lex_identifier(&mut self) -> Option<LexResult> {
-        let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-        if opt_lexerror.is_some() { return opt_lexerror; }
+    fn tok_identifier(&mut self) -> Option<TokResult> {
+        let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+        if opt_tokerror.is_some() { return opt_tokerror; }
 
         let ch = self.cur_charresult().char_or_nul();
         if !is_identifier_first_char(ch) {
-            return Some(LexResult::Error(LexError::InternalError));
+            return Some(TokResult::Error(TokError::InternalError));
         }
 
         let first_linecharnums = self.cur_linecharnums();
@@ -543,10 +543,10 @@ impl<'a> Lexer<'a> {
         let mut s: String = ch.into();
 
         loop {
-            consume_char!(self, lex_identifier);
+            consume_char!(self, tok_identifier);
 
-            let opt_lexerror = self.lexerror_unless_cur_char_or_eol();
-            if opt_lexerror.is_some() { return opt_lexerror; }
+            let opt_tokerror = self.tokerror_unless_cur_char_or_eol();
+            if opt_tokerror.is_some() { return opt_tokerror; }
     
             let ch = self.cur_charresult().char_or_nul();
             if !is_identifier_subsequent_char(ch) {
@@ -558,50 +558,50 @@ impl<'a> Lexer<'a> {
             last_linecharnums = self.cur_linecharnums();
         }
 
-        Some(LexResult::Token(TokenInfo {
+        Some(TokResult::Token(TokenInfo {
             linechar_range: first_linecharnums..=last_linecharnums,
             token: Token::Identifier(s),
         }))
     }}
 
-impl<'a> Iterator for Lexer<'a> {
-    type Item = LexResult;
+impl<'a> Iterator for Tokenizer<'a> {
+    type Item = TokResult;
 
-    fn next(&mut self) -> Option<LexResult> {
+    fn next(&mut self) -> Option<TokResult> {
         if self.yielded_final {
             return None;
         }
 
         loop {
-            let opt_lex_result = self.lex_initial();
+            let opt_tok_result = self.tok_initial();
 
-            if let Some(ref lex_result) = opt_lex_result {
+            if let Some(ref tok_result) = opt_tok_result {
                 self.prev_yielded_wants_whitespace =
-                    lex_result.is_following_whitespace_significant();
+                    tok_result.is_following_whitespace_significant();
 
-                self.yielded_final = lex_result.is_final();
+                self.yielded_final = tok_result.is_final();
 
-                return opt_lex_result;
+                return opt_tok_result;
             }
         }
     }
 }
 
-impl<'a> std::iter::FusedIterator for Lexer<'a> {}
+impl<'a> std::iter::FusedIterator for Tokenizer<'a> {}
 
 #[cfg(test)]
 mod test {
     #[test]
     fn test() {
-        const TEST_DATA_SUBDIR: &str = "lexer";
+        const TEST_DATA_SUBDIR: &str = "tokenizer";
 
         crate::test_util::insta_glob(TEST_DATA_SUBDIR, |_file_path, bx_bufread| {
-            //eprintln!("lexer::test::test() file_path: {:?}", _file_path);
+            //eprintln!("tokenizer::test::test() file_path: {:?}", _file_path);
 
             let mut source_bytes = crate::source_bytes::source_bytes(bx_bufread);
             let mut source_chars = crate::source_chars::source_chars(&mut source_bytes);
 
-            let tokens = crate::lexer::Lexer::new(&mut source_chars);
+            let tokens = crate::tokenizer::Tokenizer::new(&mut source_chars);
 
             let results = tokens.collect::<Vec<_>>();
 
@@ -611,22 +611,22 @@ mod test {
 
     #[test]
     pub fn t_01() {
-        let path = std::path::Path::new(r"src/test_data/lexer/identifiers.txt");
+        let path = std::path::Path::new(r"src/test_data/tokenizer/identifiers.txt");
         let file = std::fs::File::open(path).unwrap();
         let bufreader = std::io::BufReader::new(file);
         let bx_bufread = Box::new(bufreader);
         let mut source_bytes = crate::source_bytes::source_bytes(bx_bufread);
         let mut source_chars = crate::source_chars::source_chars(&mut source_bytes);
-        let tokens = crate::lexer::Lexer::new(&mut source_chars);
+        let tokens = crate::tokenizer::Tokenizer::new(&mut source_chars);
         let results = tokens.collect::<Vec<_>>();
 
-        for (ix, lex_result) in results.iter().enumerate() {
-            eprintln!("lex_result = {:?}", &lex_result);
+        for (ix, tok_result) in results.iter().enumerate() {
+            eprintln!("tok_result = {:?}", &tok_result);
             let last = ix + 1 == results.len();
 
-            assert!(!lex_result.is_error());
-            assert!(last == lex_result.is_eod());
-            assert!(last == lex_result.is_final());
+            assert!(!tok_result.is_error());
+            assert!(last == tok_result.is_eod());
+            assert!(last == tok_result.is_final());
         }
     }
 }
