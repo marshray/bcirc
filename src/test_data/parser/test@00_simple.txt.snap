@@ -1,0 +1,5 @@
+---
+source: src/parser.rs
+input_file: src/test_data/parser/00_simple.txt
+---
+Ok(IntegerLiteral(I128(1)))

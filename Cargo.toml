@@ -6,8 +6,16 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 anyhow = "1.0.75"
+bitvec = { version = "1.0.1", features = ["serde"] }
+bumpalo =  { version = "3.14.0", features = ["allocator_api"] }
 ron = "0.8.1"
 serde = { version = "1.0.188", features = ["derive"] }
+chumsky = { version = "0.9.2", default-features = false, features = ["std"] }
+#ariadne = "0.3"
+memmap2 = "0.7.1"
+thiserror = "1.0.48"
+self_cell = "1.0.1"
+deku = "0.16.0"
 
 [dev-dependencies]
 insta = { version = "1.31.0", features = ["glob", "redactions", "ron"] }

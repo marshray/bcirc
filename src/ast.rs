@@ -9,11 +9,17 @@
 #![allow(unused_mut)] //? TODO for development
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
+#![allow(non_snake_case)] //? TODO for development
 
-use anyhow::*;
+//? use use std::fmt::Display;
+//? use std::ops::RangeInclusive;
+
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum IntegerRepr {
-    I128(i128),
+use crate::values as dr;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum AstItem {
+    IntegerLiteral(dr::Integer),
+    BitsLiteral(dr::Bits),
 }

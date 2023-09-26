@@ -10,13 +10,14 @@ use serde::{Deserialize, Serialize};
 use crate::maybe_some;
 use crate::util::OptFrom;
 
+/// A line number. One-based, because every file editor counts that way.
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
 pub struct LineNum(u64);
 
 impl LineNum {
-    const MIN_U64: u64 = 1;
-    const MAX_U64: u64 = u64::MAX;
+    pub const MIN_U64: u64 = 1;
+    pub const MAX_U64: u64 = u64::MAX;
 
     /// Returns line number 1.
     pub const fn one() -> Self {
@@ -44,6 +45,8 @@ impl OptFrom<u64> for LineNum {
     }
 }
 
+/// A char number. One-based from the beginning of the line, because every file editor
+/// counts that way.
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
 pub struct CharNum(u64);
@@ -78,6 +81,7 @@ impl OptFrom<u64> for CharNum {
     }
 }
 
+/// A line number and a char number on that line.
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
 pub struct LineCharNums([u64; 2]);

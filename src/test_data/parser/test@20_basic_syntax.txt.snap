@@ -1,0 +1,7 @@
+---
+source: src/parser.rs
+input_file: src/test_data/parser/20_basic_syntax.txt
+---
+Err(Parse([
+  "found \"/\" but expected \"0\"",
+]))

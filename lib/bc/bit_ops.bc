@@ -1,0 +1,27 @@
+// Copyright 2023 Marsh J. Ray
+//
+// Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
+// http://opensource.org/licenses/MIT>, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
+/*
+Bit =~ 0 | 1;
+
+bits = Bit[(N a NNeg) ..= 0];
+
+mod not {
+    N: Integer;
+    [i: bits (N - 1)..0]
+}
+
+not =~ b: Bit -> r: Bit = 
+    | b r 
+    | 0 1
+    | 1 0  ;
+
+not =~ b * 8..0i < 8: [Bit; 8] -> [Bit; 8] = 
+    | b | _ |
+    | 0 | 1 |
+    | 1 | 0 |
+*/

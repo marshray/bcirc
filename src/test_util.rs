@@ -9,12 +9,15 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 
+//use anyhow::anyhow;
+
 pub const TEST_DATA_DIR: &str = "test_data";
 pub const GLOB_STR: &str = "*.{bin,txt}";
 
 /// Calls `test_fn` for every file under `test_data_subdir` matching `GLOB_STR`.
 ///
 /// `test_fn` returns `()`.
+#[allow(dead_code)]
 pub fn insta_glob<P: Into<PathBuf>, F: FnMut(&Path, Box<dyn BufRead>)>(
     test_data_subdir: P,
     mut test_fn: F,
@@ -23,6 +26,7 @@ pub fn insta_glob<P: Into<PathBuf>, F: FnMut(&Path, Box<dyn BufRead>)>(
         test_fn(path, bx_bufread);
         Ok(())
     })
+    .unwrap();
 }
 
 /// Calls `test_fn` for every file under `test_data_subdir` matching `GLOB_STR`.
@@ -34,9 +38,11 @@ pub fn insta_glob_result<
 >(
     test_data_subdir: P,
     mut test_fn_returning_result: F,
-) {
+) -> anyhow::Result<()> {
     let test_data_subdir: PathBuf = test_data_subdir.into();
     let snapshot_path = PathBuf::from(TEST_DATA_DIR).join(test_data_subdir);
+
+    let mut vec_err_paths = Vec::<(std::path::PathBuf, anyhow::Error)>::new();
 
     insta::with_settings!({
         omit_expression => true,
@@ -58,17 +64,26 @@ pub fn insta_glob_result<
 
                 let bx_bufread = Box::new(bufreader);
 
-                file_specific_redactions(file_path, bx_bufread, &mut test_fn_returning_result);
+                let result = file_specific_redactions(file_path, bx_bufread, &mut test_fn_returning_result);
+
+                if let Err(error) = result {
+                    vec_err_paths.push((file_path.into(), error));
+                }
             }
-        );
+        )
     });
+
+    if !vec_err_paths.is_empty() {
+        anyhow::bail!("one or more of the glob files errored")
+    }
+    Ok(())
 }
 
 fn file_specific_redactions<F: FnMut(&Path, Box<dyn BufRead>) -> anyhow::Result<()>>(
     file_path: &Path,
     bx_bufread: Box<BufReader<File>>,
     test_fn: &mut F,
-) {
+) -> anyhow::Result<()> {
     let mut settings = insta::Settings::clone_current();
 
     // Text files can have their line endings modified by source control, so configure the
@@ -98,5 +113,5 @@ fn file_specific_redactions<F: FnMut(&Path, Box<dyn BufRead>) -> anyhow::Result<
         settings.add_redaction(selector, replacement);
     }
 
-    settings.bind(|| test_fn(file_path, bx_bufread).unwrap());
+    settings.bind(|| test_fn(file_path, bx_bufread))
 }

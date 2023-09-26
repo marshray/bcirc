@@ -1,0 +1,37 @@
+
+/*
+//==== Expressions are valid at toplevel.
+// A constant is an expression.
+0;
+
+1;
+
+// List
+(0, 0);
+
+//==== patterns
+
+// Dict
+U2: { b1: B, b0: B };
+
+U2: { b1: B, b0: B };
+
+U3: { b2-0: [B*3], };
+U8: { b7: B, b6: B, b5: B, b4: B, b3: B, b2: B, b1: B, b0: B, }
+
+
+@(B, B);
+1 . {
+    0 => 1,
+    1 => 0
+} . 0;
+
+//==== 
+
+//==== 
+
+//==== 
+
+//==== The final expression (no ;) in a file is its leftward picture
+*/
+0

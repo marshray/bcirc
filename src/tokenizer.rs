@@ -156,7 +156,7 @@ enum MaybeCharResult {
     PastEofCount(usize),
 }
 
-struct Tokenizer<'a> {
+pub struct Tokenizer<'a> {
     bx_source_chars: Box<dyn Iterator<Item = MaybeCharResult> + 'a>,
     charresults: [CharResult; 3],
     linecharnumses: [LineCharNums; 3],
