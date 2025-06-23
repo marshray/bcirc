@@ -11,7 +11,15 @@
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    serde::Deserialize,
+    serde::Serialize
+)]
 #[repr(transparent)]
 pub struct LineNumberOneBased(u64);
 impl LineNumberOneBased {
@@ -28,7 +36,15 @@ impl LineNumberOneBased {
 }
 
 #[repr(transparent)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    serde::Deserialize,
+    serde::Serialize
+)]
 pub struct CharNumberOneBased(u64);
 
 impl CharNumberOneBased {

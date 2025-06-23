@@ -12,22 +12,17 @@
 #![allow(unused_imports)] //? TODO for development
 
 mod ast;
-mod char_loc;
-
 mod config;
 pub use crate::config::EvaluatorConfig;
 
 mod data_repr;
 mod file_content;
-mod values;
 mod parser;
 mod sources;
 mod util;
+mod values;
 
 #[cfg(test)]
 mod test_util;
-
-use std::sync::{Arc, RwLock};
-
 
 pub const BCIRC_PATH_ENV_VAR_NAME: &str = "BCIRC_PATH";

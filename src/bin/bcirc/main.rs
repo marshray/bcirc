@@ -10,8 +10,9 @@
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
 
-use anyhow::{Context, Result};
 use std::process::ExitCode;
+
+use anyhow::{Context, Result};
 
 fn main() -> ExitCode {
     if let Err(e) = run() {
