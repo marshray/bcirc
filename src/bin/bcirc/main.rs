@@ -10,7 +10,7 @@
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
@@ -24,11 +24,11 @@ fn main() -> ExitCode {
 
 fn run() -> Result<()> {
     // Set up the config
-    let bcirc_config = bcirc::make_default_EvaluatorConfig()?;
+    let bcirc_config = bcirc::EvaluatorConfig::new()?;
 
     let config = bcirc_config
         .read()
-        .map_err(|poison_error| anyhow::anyhow!("{poison_error}"))?;
+        .map_err(|poison_error| anyhow::anyhow!("Reading Bcirc Config: {poison_error}"))?;
 
     eprintln!("bcirc config: {config:?}");
 

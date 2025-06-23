@@ -10,24 +10,23 @@ edition = "2024"
 [dependencies]
 
 anyhow = "1.0.98"
-either = { version = "1.15.0", default-features = false, features = [] }
-itertools = { version = "0.14.0", default-features = false, features = [] }
-ron = "0.10.1"
-serde = { version = "1.0.188", features = ["derive"] }
-
+# ariadne = "0.3"
 bitvec = { version = "1.0.1", features = ["serde"] }
 # bumpalo =  { version = "3.18.1", features = ["allocator_api"] }
 chumsky = { version = "0.9.3", default-features = false, features = ["std"] }
-#ariadne = "0.3"
-memmap2 = "0.7.1"
-thiserror = "1.0.69"
-self_cell = "1.2.0"
 # deku = "0.16.0"
+either = { version = "1.15.0", default-features = false, features = [] }
+# itertools = { version = "0.14.0", default-features = false, features = [] }
+memmap2 = "0.9.5"
+# ron = "0.10.1"
+self_cell = "1.2.0"
+serde = { version = "1.0.188", features = ["derive"] }
+thiserror = "2.0.12"
 
 #====================================== Dev-Dependencies ==========================================|
 [dev-dependencies]
 #  insta.workspace = true
-insta = { version = "1.31.0", default-features = false, features = ["glob", "redactions", "ron"] }
+insta = { version = "1.43.1", default-features = false, features = ["glob", "redactions", "ron"] }
 
 [profile.dev.package.insta]
 opt-level = 3

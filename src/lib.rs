@@ -13,17 +13,15 @@
 
 mod ast;
 mod char_loc;
+
 mod config;
+pub use crate::config::EvaluatorConfig;
+
 mod data_repr;
 mod file_content;
 mod values;
-//mod lines;
 mod parser;
-// mod line_char_nums;
-//mod source_bytes;
 mod sources;
-//mod source_chars;
-// mod tokenizer;
 mod util;
 
 #[cfg(test)]
@@ -31,41 +29,5 @@ mod test_util;
 
 use std::sync::{Arc, RwLock};
 
-pub use crate::config::EvaluatorConfig;
 
 pub const BCIRC_PATH_ENV_VAR_NAME: &str = "BCIRC_PATH";
-
-#[derive(Debug, thiserror::Error)]
-pub enum EvaluatorConfigError {
-    // #[error("couldn't open file: {0}")]
-    // StdIoError(String),
-
-    // #[error("UTF-8 encoding error: {0}")]
-    // Utf8Error(String),
-
-    // #[error("parse error")]
-    // Parse(Vec<String>),
-    #[error("Env var '{BCIRC_PATH_ENV_VAR_NAME}' not defined")]
-    BcircPathEnvVarNotDefined,
-
-    #[error(
-        "The existence of source path directory '{0}' can neither be confirmed nor denied: {1}"
-    )]
-    PathDirTryExistsStdIoError(std::path::PathBuf, std::io::Error),
-
-    #[error("The source path directory '{0}' does not exist.")]
-    PathDirNotExist(std::path::PathBuf),
-
-    #[error("The source path directory '{0}' is not a directory.")]
-    PathDirIsNot(std::path::PathBuf),
-
-    #[error("todo")]
-    Todo,
-}
-
-/// Creates a default config from env vars.
-#[allow(non_snake_case)]
-pub fn make_default_EvaluatorConfig() -> Result<Arc<RwLock<EvaluatorConfig>>, EvaluatorConfigError>
-{
-    EvaluatorConfig::new_default()
-}
