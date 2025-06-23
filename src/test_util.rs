@@ -1,9 +1,15 @@
-// Copyright 2023 Marsh J. Ray
+// Copyright 2023-2025 Marsh J. Ray
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
+
+#![allow(dead_code)] //? TODO for development
+#![allow(non_snake_case)] //? TODO for development
+#![allow(unused_mut)] //? TODO for development
+#![allow(unused_variables)] //? TODO for development
+#![allow(unused_imports)] //? TODO for development
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -99,7 +105,7 @@ fn file_specific_redactions<F: FnMut(&Path, Box<dyn BufRead>) -> anyhow::Result<
                 //     ...
                 // ])
                 use insta::_macro_support::Content;
-                if let Content::Struct(_struct_type, ref mut vec) = content {
+                if let Content::Struct(_struct_type, vec) = content {
                     // struct_type: "SourceFileCharLoc"
                     //eprintln!("struct_type: {_struct_type:?}");
                     vec.retain(|(label, _)| *label != "file_offset_range");

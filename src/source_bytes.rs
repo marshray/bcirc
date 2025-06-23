@@ -1,4 +1,4 @@
-// Copyright 2023 Marsh J. Ray
+// Copyright 2023-2025 Marsh J. Ray
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 #![allow(dead_code)] //? TODO for development
+#![allow(non_snake_case)] //? TODO for development
 #![allow(unused_mut)] //? TODO for development
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
@@ -155,30 +156,30 @@ pub fn source_bytes_file_mmap(file_path: &std::path::Path) -> impl Iterator<Item
 }
  */
 #[cfg(test)]
-mod test {
+mod t {
     #[test]
     fn test() {
-/*
-const TEST_DATA_SUBDIR: &str = "source_bytes";
+        /*
+        const TEST_DATA_SUBDIR: &str = "source_bytes";
 
-let mut iter_n = 0_usize;
-crate::test_util::insta_glob(TEST_DATA_SUBDIR, move |_file_path, bx_bufread| {
-    iter_n += 1;
-    let source_bytes = 
-            match iter_n%2 {
-                1 => {
-                    crate::source_bytes::source_bytes_bx_bufread(bx_bufread)
-                }
-                0 => {
-                    crate::source_bytes::source_bytes_bx_bufread(bx_bufread)
+        let mut iter_n = 0_usize;
+        crate::test_util::insta_glob(TEST_DATA_SUBDIR, move |_file_path, bx_bufread| {
+            iter_n += 1;
+            let source_bytes = 
+                    match iter_n%2 {
+                        1 => {
+                            crate::source_bytes::source_bytes_bx_bufread(bx_bufread)
+                        }
+                        0 => {
+                            crate::source_bytes::source_bytes_bx_bufread(bx_bufread)
+                            
+                        }
+                    };
                     
-                }
-            };
-            
-            let results = source_bytes.collect::<Vec<_>>();
-            
-            insta::assert_ron_snapshot!(results);
-        });
-*/        
+                    let results = source_bytes.collect::<Vec<_>>();
+                    
+                    insta::assert_ron_snapshot!(results);
+                });
+        // */        
     }
 }

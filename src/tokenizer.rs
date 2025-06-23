@@ -1,15 +1,15 @@
-// Copyright 2023 Marsh J. Ray
+// Copyright 2023-2025 Marsh J. Ray
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-//? TODO The current nightly rustc seems to have problems with declaring code dead when it really isn't.
 #![allow(dead_code)] //? TODO for development
-// #![allow(unused_mut)] //? TODO for development
-// #![allow(unused_variables)] //? TODO for development
-// #![allow(unused_imports)] //? TODO for development
+#![allow(non_snake_case)] //? TODO for development
+#![allow(unused_mut)] //? TODO for development
+#![allow(unused_variables)] //? TODO for development
+#![allow(unused_imports)] //? TODO for development
 
 use std::ops::RangeInclusive;
 
@@ -17,7 +17,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::data_repr::IntegerRepr;
 use crate::line_char_nums::{LineCharNums, LineNum};
-use crate::source_chars::CharResult;
+use crate::char_loc::{LineNumberOneBased, CharNumberOneBased, CharLoc};
+use crate::source_chars::{CharError, CharResult, SourceCharReadResult};
 use crate::util::{fs_shl, one_shl, u128_ch_bit_test};
 
 fn is_punctuation_single_char(ch: char) -> bool {
