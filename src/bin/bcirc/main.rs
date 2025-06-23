@@ -26,7 +26,8 @@ fn run() -> Result<()> {
     // Set up the config
     let bcirc_config = bcirc::make_default_EvaluatorConfig()?;
 
-    let config = bcirc_config.read()
+    let config = bcirc_config
+        .read()
         .map_err(|poison_error| anyhow::anyhow!("{poison_error}"))?;
 
     eprintln!("bcirc config: {config:?}");

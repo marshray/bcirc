@@ -46,7 +46,6 @@ impl From<Vec<ChumskyError>> for ParseFileError {
     }
 }
 
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ParsingResult {
     cnt_tokens: usize,
@@ -54,10 +53,10 @@ pub struct ParsingResult {
 
 // ParseFileError
 use chumsky::{
+    Parser,
     prelude::Simple,
     primitive::{end, filter},
     text::TextParser,
-    Parser,
 };
 
 fn parser() -> impl Parser<char, AstItem, Error = Simple<char>> {
@@ -77,7 +76,8 @@ fn parser() -> impl Parser<char, AstItem, Error = Simple<char>> {
 }
 
 pub fn parse<T>(content: T) -> Result<AstItem, ParseFileError>
-    where T: AsRef<str>
+where
+    T: AsRef<str>,
 {
     let parser = parser();
 
@@ -97,7 +97,7 @@ pub fn parse_file(file_path: &std::path::Path) -> Result<AstItem, ParseFileError
 
 #[cfg(test)]
 mod test {
-    use super::{parse_file, ParseFileError};
+    use super::{ParseFileError, parse_file};
 
     #[test]
     fn test() -> anyhow::Result<()> {

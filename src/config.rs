@@ -11,7 +11,10 @@
 #![allow(unused_imports)] //? TODO for development
 #![allow(non_snake_case)] //? TODO for development
 
-use std::{path::{Path, PathBuf}, sync::{Arc, Weak, RwLock}};
+use std::{
+    path::{Path, PathBuf},
+    sync::{Arc, RwLock, Weak},
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -24,11 +27,14 @@ fn verify_path_dir(dir_path: &Path) -> Result<bool, EvaluatorConfigError> {
         return Err(EvaluatorConfigError::PathDirIsNot(dir_path.to_path_buf()));
     }
 
-    let verified_dir = dir_path.try_exists()
+    let verified_dir = dir_path
+        .try_exists()
         .map_err(|e| EvaluatorConfigError::PathDirTryExistsStdIoError(dir_path.to_path_buf(), e))?;
 
-    if ! dir_path.is_dir() {        
-        return Err(EvaluatorConfigError::PathDirNotExist(dir_path.to_path_buf()));
+    if !dir_path.is_dir() {
+        return Err(EvaluatorConfigError::PathDirNotExist(
+            dir_path.to_path_buf(),
+        ));
     }
 
     let verified_dir = verified_dir && dir_path.is_dir();
@@ -46,7 +52,6 @@ impl EvaluatorConfig {
     // Create some `SourceSearchPath`s, adding them to `v`. They will need their `weak_search_paths`
     // and `search_paths_ix` members set after it's known.
     fn source_search_paths() -> Result<Vec<PathBuf>, EvaluatorConfigError> {
-
         // Start with the "." current directory path.
         let mut search_paths = vec![".".into()];
 

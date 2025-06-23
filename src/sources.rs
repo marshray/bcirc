@@ -11,10 +11,12 @@
 #![allow(unused_imports)] //? TODO for development
 #![allow(non_snake_case)] //? TODO for development
 
-//? use use std::fmt::Display;
 //? use std::ops::RangeInclusive;
 
-use std::{path::PathBuf, sync::{Arc, RwLock}};
+use std::{
+    path::PathBuf,
+    sync::{Arc, RwLock},
+};
 
 use serde::{Deserialize, Serialize};
 

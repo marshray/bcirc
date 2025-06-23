@@ -11,17 +11,12 @@
 #![allow(unused_variables)] //? TODO for development
 #![allow(unused_imports)] //? TODO for development
 
-//#![feature(iter_from_generator)]
-//#![feature(generators, generator_trait)]
-//#![feature(generic_arg_infer)] // const arrays in tests
-//#![feature(return_position_impl_trait_in_trait)]
-
 mod ast;
 mod char_loc;
 mod config;
 mod data_repr;
-mod values;
 mod file_content;
+mod values;
 //mod lines;
 mod parser;
 // mod line_char_nums;
@@ -50,11 +45,12 @@ pub enum EvaluatorConfigError {
 
     // #[error("parse error")]
     // Parse(Vec<String>),
-
     #[error("Env var '{BCIRC_PATH_ENV_VAR_NAME}' not defined")]
     BcircPathEnvVarNotDefined,
 
-    #[error("The existence of source path directory '{0}' can neither be confirmed nor denied: {1}")]
+    #[error(
+        "The existence of source path directory '{0}' can neither be confirmed nor denied: {1}"
+    )]
     PathDirTryExistsStdIoError(std::path::PathBuf, std::io::Error),
 
     #[error("The source path directory '{0}' does not exist.")]
@@ -69,6 +65,7 @@ pub enum EvaluatorConfigError {
 
 /// Creates a default config from env vars.
 #[allow(non_snake_case)]
-pub fn make_default_EvaluatorConfig() -> Result<Arc<RwLock<EvaluatorConfig>>, EvaluatorConfigError> {
+pub fn make_default_EvaluatorConfig() -> Result<Arc<RwLock<EvaluatorConfig>>, EvaluatorConfigError>
+{
     EvaluatorConfig::new_default()
 }

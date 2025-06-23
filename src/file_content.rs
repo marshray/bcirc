@@ -5,7 +5,8 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-#![allow(dead_code)] //? TODO for development
+#![allow(dead_code)]
+//? TODO for development
 // #![allow(unused_mut)] //? TODO for development
 // #![allow(unused_variables)] //? TODO for development
 // #![allow(unused_imports)] //? TODO for development
@@ -44,15 +45,12 @@ impl FileContent {
         let mmap = unsafe { Mmap::map(&file) }?;
 
         let fci = FileContentImpl::try_new::<anyhow::Error>(
-            FileContentImplInner {
-                file,
-                mmap,
-            },
+            FileContentImplInner { file, mmap },
             |owner| {
                 let bytes = owner.mmap.as_ref();
                 let s = std::str::from_utf8(bytes)?;
                 Ok(RefBytesStr(bytes, s)) // RefBytesStr<'a>((&'a [u8], &'a str))
-            }
+            },
         )?;
 
         Ok(FileContent(fci))
