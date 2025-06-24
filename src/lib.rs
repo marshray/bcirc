@@ -32,6 +32,7 @@ pub use crate::config::EvaluatorConfig;
 
 mod data_repr;
 mod file_content;
+mod lexer;
 mod parser;
 mod sources;
 mod util;

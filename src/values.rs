@@ -1,4 +1,4 @@
-// Copyright 2023 Marsh J. Ray
+// Copyright 2023-2025 Marsh J. Ray
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -28,16 +28,18 @@
 
 use anyhow::*;
 use bitvec::prelude::*;
-use serde::{Deserialize, Serialize};
+//use serde::{Deserialize, Serialize};
 
 /// An integer
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub enum Integer {
     I128(i128),
 }
 
 /// How a [`Bits`] works on the left and the right.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub enum BitsExtent {
     /// Anchored.
     Anchored,
@@ -50,7 +52,8 @@ pub enum BitsExtent {
 }
 
 /// Representation of a [`Bits`] value.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Bits {
     /// Extents, left and right.
     extents: [BitsExtent; 2],

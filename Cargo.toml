@@ -13,7 +13,11 @@ anyhow = "1.0.98"
 # ariadne = "0.3"
 bitvec = { version = "1.0.1", features = ["serde"] }
 # bumpalo =  { version = "3.18.1", features = ["allocator_api"] }
-chumsky = { version = "0.9.3", default-features = false, features = ["std"] }
+chumsky = { version = "0.10.1", default-features = false, features = [
+    "nightly",
+    "std",
+    "serde",
+] }
 # deku = "0.16.0"
 either = { version = "1.15.0", default-features = false, features = [] }
 # itertools = { version = "0.14.0", default-features = false, features = [] }

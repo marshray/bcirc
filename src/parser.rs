@@ -26,14 +26,23 @@
 #![allow(unreachable_code)] //? TODO for development
 #![allow(clippy::needless_lifetimes, clippy::let_and_return)] //? TODO for development
 
+/*
+
 use std::{default, fmt::Display};
 
+use chumsky::{
+    prelude::*,
+    error::{RichReason, RichPattern},
+};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::{ast::AstItem, values::Integer};
+use crate::{
+    ast::AstItem,
+    values::*
+};
 
-type ChumskyError = chumsky::error::Simple<char>;
+//?type ChumskyError<'a> = Simple<'a, char>;
 
 #[derive(Error, Debug, Serialize, Deserialize)]
 pub enum ParseFileError {
@@ -50,27 +59,26 @@ pub enum ParseFileError {
     Todo,
 }
 
-impl From<Vec<ChumskyError>> for ParseFileError {
-    fn from(chumsky_errors: Vec<ChumskyError>) -> Self {
-        let vs: Vec<String> = chumsky_errors.iter().map(|ce| ce.to_string()).collect();
+/*
+impl From<Vec<ChumskyError<'_>>> for ParseFileError {
+    fn from(chumsky_errors: Vec<ChumskyError<'_>>) -> Self {
+        let vs = chumsky_errors.iter().map(|ce| ce.to_string()).collect();
         ParseFileError::Parse(vs)
     }
 }
+// */
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ParsingResult {
     cnt_tokens: usize,
 }
 
-// ParseFileError
-use chumsky::{
-    Parser,
-    prelude::Simple,
-    primitive::{end, filter},
-    text::TextParser,
-};
 
-fn parser() -> impl Parser<char, AstItem, Error = Simple<char>> {
+//? Parser<'src, I: Input<'src>, O, E: ParserExtra<'src, I> = Default>
+fn parser<'tokens, 'src: 'tokens, I>() -> impl Parser<'tokens, I, AstItem, extra::Err<Rich<'src, char>>> + Clone
+where
+    I: ValueInput<'tokens, Token = Token<'src>, Span = Span>,
+{
     // filter(|ch: &char| ch.is_ascii_digit())
     // .map(|ch| {
     //     let d = ch.to_digit(10).unwrap();
@@ -79,11 +87,14 @@ fn parser() -> impl Parser<char, AstItem, Error = Simple<char>> {
     // .padded_by(filter(|ch: &char| ch.is_whitespace()).repeated())
     // .then_ignore(end())
 
+    /*
     let integer_literal = chumsky::text::int(10)
         .map(|s: String| AstItem::IntegerLiteral(Integer::I128(s.parse().unwrap())))
         .padded();
 
     integer_literal.then_ignore(end())
+    // */
+    just::<_, _, extra::Err<Rich<char>>>("+")
 }
 
 pub fn parse<T>(content: T) -> Result<AstItem, ParseFileError>
@@ -110,7 +121,7 @@ pub fn parse_file(file_path: &std::path::Path) -> Result<AstItem, ParseFileError
 mod test {
     use super::{ParseFileError, parse_file};
 
-    #[test]
+    //#[test]
     fn test() -> anyhow::Result<()> {
         const TEST_DATA_SUBDIR: &str = "parser";
 
@@ -129,3 +140,4 @@ mod test {
         )
     }
 }
+// */
