@@ -45,14 +45,9 @@ Ok(LexedFile(
       end: 12,
       context: (),
     )),
-    (Caret, SimpleSpan(
+    (Ampersand, SimpleSpan(
       start: 13,
       end: 14,
-      context: (),
-    )),
-    (Ampersand, SimpleSpan(
-      start: 14,
-      end: 15,
       context: (),
     )),
     (EqualSign, SimpleSpan(
@@ -78,11 +73,6 @@ Ok(LexedFile(
     (QuestionMark, SimpleSpan(
       start: 23,
       end: 24,
-      context: (),
-    )),
-    (Tilde, SimpleSpan(
-      start: 24,
-      end: 25,
       context: (),
     )),
     (ExclamationMark, SimpleSpan(
@@ -118,6 +108,61 @@ Ok(LexedFile(
     (ForwardSlash, SimpleSpan(
       start: 35,
       end: 36,
+      context: (),
+    )),
+    (QuotationMark, SimpleSpan(
+      start: 38,
+      end: 39,
+      context: (),
+    )),
+    (Octothorpe, SimpleSpan(
+      start: 39,
+      end: 40,
+      context: (),
+    )),
+    (PercentSign, SimpleSpan(
+      start: 40,
+      end: 41,
+      context: (),
+    )),
+    (Apostrophe, SimpleSpan(
+      start: 42,
+      end: 43,
+      context: (),
+    )),
+    (Period, SimpleSpan(
+      start: 43,
+      end: 44,
+      context: (),
+    )),
+    (Semicolon, SimpleSpan(
+      start: 44,
+      end: 45,
+      context: (),
+    )),
+    (LessThanSign, SimpleSpan(
+      start: 45,
+      end: 46,
+      context: (),
+    )),
+    (EqualSign, SimpleSpan(
+      start: 47,
+      end: 48,
+      context: (),
+    )),
+    (GreaterThanSign, SimpleSpan(
+      start: 49,
+      end: 50,
+      context: (),
+    )),
+    (Underscore, SimpleSpan(
+      start: 53,
+      end: 54,
+      context: (),
+    )),
+    (VerticalBar, SimpleSpan(
+      start: 55,
+      end: 56,
       context: (),
     )),
   ],

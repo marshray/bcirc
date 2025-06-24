@@ -49,14 +49,19 @@ pub enum Token<'src> {
     Identifier(&'src str),
 
     ExclamationMark,
+    QuotationMark,
+    Octothorpe,
+    // Not using "dollar sign"
     PercentSign,
     Ampersand,
+    Apostrophe,
     ParenthesisLeft,
     ParenthesisRight,
     Asterisk,
     PlusSign,
     Comma,
     Minus,
+    Period,
     ForwardSlash,
     Colon,
     Semicolon,
@@ -67,12 +72,13 @@ pub enum Token<'src> {
     AtSign,
     SquareBracketLeft,
     SquareBracketRight,
-    Caret,
+    // Not using "circumflex accent" AKA "caret"
     Underscore,
+    // Not using "grave accent"
     CurlyBracketLeft,
     VerticalBar,
     CurlyBracketRight,
-    Tilde,
+    // Not using "tilde",
 
     /// Should produce an error
     InternalError,
@@ -102,36 +108,41 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
     //     .then(any().and_is(just('\n').not()).repeated())
     //     .padded();
     // Single-character marks
-    let single_char_mark = one_of("!&%()*+,-:;<=>?@[]^_{|}~").map(|ch| match ch {
-        '!' => Token::ExclamationMark,
-        '&' => Token::Ampersand,
-        '%' => Token::PercentSign,
-        '(' => Token::ParenthesisLeft,
-        ')' => Token::ParenthesisRight,
-        '*' => Token::Asterisk,
-        '+' => Token::PlusSign,
-        ',' => Token::Comma,
-        '-' => Token::Minus,
-        ':' => Token::Colon,
-        ';' => Token::Semicolon,
-        '<' => Token::LessThanSign,
-        '=' => Token::EqualSign,
-        '>' => Token::GreaterThanSign,
-        '?' => Token::QuestionMark,
-        '@' => Token::AtSign,
-        '[' => Token::SquareBracketLeft,
-        ']' => Token::SquareBracketRight,
-        '^' => Token::Caret,
-        '_' => Token::Underscore,
-        '{' => Token::CurlyBracketLeft,
-        '|' => Token::VerticalBar,
-        '}' => Token::CurlyBracketRight,
-        '~' => Token::Tilde,
-        _ => {
-            debug_assert_eq!(ch, '!');
-            Token::InternalError
-        }
-    });
+
+    let single_char_mark =
+        one_of("!\"#%&'()*+,-./:;<=>?@[]_{|}").map(|ch| match ch {
+            '!' => Token::ExclamationMark,
+            '"' => Token::QuotationMark,
+            '#' => Token::Octothorpe,
+            '%' => Token::PercentSign,
+            '&' => Token::Ampersand,
+            '\'' => Token::Apostrophe,
+            '(' => Token::ParenthesisLeft,
+            ')' => Token::ParenthesisRight,
+            '*' => Token::Asterisk,
+            '+' => Token::PlusSign,
+            ',' => Token::Comma,
+            '-' => Token::Minus,
+            '.' => Token::Period,
+            '/' => Token::ForwardSlash,
+            ':' => Token::Colon,
+            ';' => Token::Semicolon,
+            '<' => Token::LessThanSign,
+            '=' => Token::EqualSign,
+            '>' => Token::GreaterThanSign,
+            '?' => Token::QuestionMark,
+            '@' => Token::AtSign,
+            '[' => Token::SquareBracketLeft,
+            ']' => Token::SquareBracketRight,
+            '_' => Token::Underscore,
+            '{' => Token::CurlyBracketLeft,
+            '|' => Token::VerticalBar,
+            '}' => Token::CurlyBracketRight,
+            _ => {
+                debug_assert_eq!(ch, '!');
+                Token::InternalError
+            }
+        });
 
     let forward_slash = just('/')
         .then_ignore(just('*').not().rewind())
