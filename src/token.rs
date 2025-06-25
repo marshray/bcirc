@@ -26,21 +26,64 @@
 #![allow(unreachable_code)] //? TODO for development
 #![allow(clippy::needless_lifetimes, clippy::let_and_return)] //? TODO for development
 
-mod ast;
-mod config;
-pub use crate::config::EvaluatorConfig;
+// use anyhow::{Context, Result, anyhow};
+// use chumsky::{
+//     combinator::To,
+//     error::{RichPattern, RichReason},
+//     prelude::*,
+// };
+// use num_bigint::BigInt;
+// use self_cell::self_cell;
+// use serde::Serialize;
 
-mod file_content;
-mod integer;
-mod lex_lit_int;
-mod lexer;
-mod parser;
-mod sources;
-mod token;
-mod util;
-mod values;
+use crate::{
+    integer::Integer,
+    file_content::FileContent,
+    values::*,
+};
 
-#[cfg(test)]
-mod test_util;
+//#[derive(PartialOrd, Ord, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(serde::Serialize)]
+pub enum Token<'src> {
+    WhitespaceOrComment,
 
-pub const BCIRC_PATH_ENV_VAR_NAME: &str = "BCIRC_PATH";
+    IntegerLiteral(Integer),
+    BitsLiteral(Bits),
+    Identifier(&'src str),
+
+    ExclamationMark,
+    QuotationMark,
+    Octothorpe,
+    // Not using "dollar sign"
+    PercentSign,
+    Ampersand,
+    Apostrophe,
+    ParenthesisLeft,
+    ParenthesisRight,
+    Asterisk,
+    PlusSign,
+    Comma,
+    Minus,
+    Period,
+    ForwardSlash,
+    Colon,
+    Semicolon,
+    LessThanSign,
+    EqualSign,
+    GreaterThanSign,
+    QuestionMark,
+    AtSign,
+    SquareBracketLeft,
+    SquareBracketRight,
+    // Not using "circumflex accent" AKA "caret"
+    Underscore,
+    // Not using "grave accent"
+    CurlyBracketLeft,
+    VerticalBar,
+    CurlyBracketRight,
+    // Not using "tilde",
+    /// Should produce an error
+    InternalError,
+}
+

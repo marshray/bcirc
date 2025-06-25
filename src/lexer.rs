@@ -36,102 +36,15 @@ use num_bigint::BigInt;
 use self_cell::self_cell;
 use serde::Serialize;
 
-use crate::data_repr::Integer;
+use crate::{
+    file_content::FileContent,
+    integer::Integer,
+    token::Token,
+    values::*,
+    lex_lit_int::lit_int,
+};
 
-//#[derive(PartialOrd, Ord, Hash)]
-#[derive(Clone, Debug, PartialEq, Eq)]
-#[derive(serde::Serialize)]
-pub enum Token<'src> {
-    WhitespaceOrComment,
-
-    IntegerLiteral(Integer),
-    BitsLiteral(Bits),
-    Identifier(&'src str),
-
-    ExclamationMark,
-    QuotationMark,
-    Octothorpe,
-    // Not using "dollar sign"
-    PercentSign,
-    Ampersand,
-    Apostrophe,
-    ParenthesisLeft,
-    ParenthesisRight,
-    Asterisk,
-    PlusSign,
-    Comma,
-    Minus,
-    Period,
-    ForwardSlash,
-    Colon,
-    Semicolon,
-    LessThanSign,
-    EqualSign,
-    GreaterThanSign,
-    QuestionMark,
-    AtSign,
-    SquareBracketLeft,
-    SquareBracketRight,
-    // Not using "circumflex accent" AKA "caret"
-    Underscore,
-    // Not using "grave accent"
-    CurlyBracketLeft,
-    VerticalBar,
-    CurlyBracketRight,
-    // Not using "tilde",
-    /// Should produce an error
-    InternalError,
-}
-
-use crate::{file_content::FileContent, values::*};
-
-type LexExtraErr<'src> = extra::Err<Rich<'src, char>>;
-
-fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    let p = one_of("01").then(one_of("01_").repeated().to_slice());
-
-    p.map(|(ch0, s): (char, &'src str)| {
-        let mut i = Integer::from(0);
-        let is_negative = false; //? TODO
-
-        let signed_one = if is_negative {
-            Integer::negative_one()
-        } else {
-            Integer::one()
-        };
-
-        for ch in std::iter::once(ch0).chain(s.chars()) {
-            if ch != '_' {
-                i.double_assign();
-                if ch == '1' {
-                    i += &signed_one;
-                } else {
-                    debug_assert_eq!(ch, '0');
-                }
-            }
-        }
-
-        Token::IntegerLiteral(i)
-    })
-}
-
-fn lit_int<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    let base2 = lit_int_base_2();
-
-    let base10 = just('\'').ignore_then(text::int(10).map_with(|s: &str, _e| {
-        let i: i64 = s.parse().unwrap();
-        let integer_value = Integer::I64(i);
-        Token::IntegerLiteral(integer_value)
-    }));
-
-    let base16 = text::int(16).map_with(|s: &str, _e| {
-        let i: i64 = s.parse().unwrap();
-        let integer_value = Integer::I64(i);
-        Token::IntegerLiteral(integer_value)
-    });
-
-    base2.or(base10).or(base16)
-}
+pub(crate) type LexExtraErr<'src> = extra::Err<Rich<'src, char>>;
 
 fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>, LexExtraErr<'src>>
 {

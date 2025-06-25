@@ -31,10 +31,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::values as dr;
+use crate::values::Bits;
+use crate::integer::Integer;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum AstItem {
-    IntegerLiteral(dr::Integer),
-    BitsLiteral(dr::Bits),
+    IntegerLiteral(Integer),
+    BitsLiteral(Bits),
 }

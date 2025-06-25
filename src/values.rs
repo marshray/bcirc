@@ -30,13 +30,6 @@ use anyhow::*;
 use bitvec::prelude::*;
 //use serde::{Deserialize, Serialize};
 
-/// An integer
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[derive(serde::Serialize, serde::Deserialize)]
-pub enum Integer {
-    I128(i128),
-}
-
 /// How a [`Bits`] works on the left and the right.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[derive(serde::Serialize, serde::Deserialize)]
