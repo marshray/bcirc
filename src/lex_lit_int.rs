@@ -37,16 +37,11 @@ use self_cell::self_cell;
 use serde::Serialize;
 
 use crate::{
-    integer::Integer,
-    file_content::FileContent,
-    token::Token,
-    bits::*,
-    lexer::LexExtraErr,
+    bits::*, file_content::FileContent, integer::Integer, lexer::LexExtraErr, token::Token,
 };
 
 pub(crate) fn lit_int<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    lit_int_base_2()
-    .or(lit_int_base_10())    
+    lit_int_base_2().or(lit_int_base_10())
 }
 
 fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
@@ -55,25 +50,15 @@ fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraE
     let p = p.ignore_then(just('_').repeated());
 
     // This part is parsed to an integer.
-    let q =
-        one_of("01")
-        .then(one_of("01_").repeated());
+    let q = one_of("01").then(one_of("01_").repeated());
     let q = q.to_slice();
     let q = q.map(|s: &'src str| {
         let mut i = Integer::from(0);
-        let is_negative = false; //? TODO
-
-        let signed_one = if is_negative {
-            Integer::negative_one()
-        } else {
-            Integer::one()
-        };
-
         for ch in s.chars() {
             if ch != '_' {
                 i.double_assign();
                 if ch == '1' {
-                    i += &signed_one;
+                    i += 1;
                 } else {
                     debug_assert_eq!(ch, '0');
                 }
@@ -86,16 +71,23 @@ fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraE
 }
 
 fn lit_int_base_10<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    let p =
+    let p = one_of("+-").or_not();
+    let p = p.then(
         one_of("0123456789")
-        .then(one_of("0123456789_").repeated())
-        .to_slice();
+            .then(one_of("0123456789_").repeated())
+            .to_slice(),
+    );
 
-    p.map(|s: &'src str| {
-        let is_negative = false; //? TODO
+    p.map(|pr: (Option<char>, &'src str)| {
+        let (opt_ch, s) = pr;
+        let is_negative = opt_ch.filter(|&ch| ch == '-').is_some();
 
         let ten: Integer = 10.into();
-        let signed_ten = if is_negative { Integer::from(-10_i8) } else { ten };
+        let signed_ten = if is_negative {
+            Integer::from(-10_i8)
+        } else {
+            ten
+        };
 
         let mut i = Integer::from(0);
         for ch in s.chars() {
@@ -104,6 +96,10 @@ fn lit_int_base_10<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtra
                 i *= 10_i64;
                 i += (ch as isize - '0' as isize) as i64;
             }
+        }
+
+        if is_negative {
+            i = -i;
         }
 
         Token::IntegerLiteral(i)

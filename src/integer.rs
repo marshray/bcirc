@@ -151,6 +151,23 @@ impl std::cmp::PartialEq for Integer {
 
 impl std::cmp::Eq for Integer {}
 
+impl std::ops::Neg for Integer {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        match self {
+            Integer::I64(val_i64) => {
+                if val_i64 != i64::MIN {
+                    Integer::I64(-val_i64)
+                } else {
+                    Integer::BigInt(-BigInt::from(val_i64))
+                }
+            }
+            Integer::BigInt(val_bi) => Integer::BigInt(-val_bi),
+        }
+    }
+}
+
 impl std::ops::AddAssign<i64> for Integer {
     #[inline]
     fn add_assign(&mut self, rhs: i64) {

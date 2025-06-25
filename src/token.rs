@@ -36,11 +36,7 @@
 // use self_cell::self_cell;
 // use serde::Serialize;
 
-use crate::{
-    integer::Integer,
-    file_content::FileContent,
-    bits::*,
-};
+use crate::{bits::*, file_content::FileContent, integer::Integer};
 
 //#[derive(PartialOrd, Ord, Hash)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -62,9 +58,9 @@ pub enum Token<'src> {
     ParenthesisLeft,
     ParenthesisRight,
     Asterisk,
-    PlusSign,
+    //PlusSign, // introduces positive IntegerLiteral
     Comma,
-    Minus,
+    //Minus, // introduces negative IntegerLiteral
     Period,
     ForwardSlash,
     Colon,
@@ -86,4 +82,3 @@ pub enum Token<'src> {
     /// Should produce an error
     InternalError,
 }
-

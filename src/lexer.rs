@@ -37,11 +37,7 @@ use self_cell::self_cell;
 use serde::Serialize;
 
 use crate::{
-    file_content::FileContent,
-    integer::Integer,
-    token::Token,
-    bits::*,
-    lex_lit_int::lit_int,
+    bits::*, file_content::FileContent, integer::Integer, lex_lit_int::lit_int, token::Token,
 };
 
 pub(crate) type LexExtraErr<'src> = extra::Err<Rich<'src, char>>;
@@ -67,7 +63,7 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
     //     .padded();
     // Single-character marks
 
-    let single_char_mark = one_of("!\"#%&()*+,-./:;<=>?@[]_{|}").map(|ch| match ch {
+    let single_char_mark = one_of("!\"#%&()*,./:;<=>?@[]_{|}").map(|ch| match ch {
         '!' => Token::ExclamationMark,
         '"' => Token::QuotationMark,
         '#' => Token::Octothorpe,
@@ -77,9 +73,9 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
         '(' => Token::ParenthesisLeft,
         ')' => Token::ParenthesisRight,
         '*' => Token::Asterisk,
-        '+' => Token::PlusSign,
+        //'+' => Token::PlusSign, // introduces positive IntegerLiteral
         ',' => Token::Comma,
-        '-' => Token::Minus,
+        //'-' => Token::Minus, // introduces negative IntegerLiteral
         '.' => Token::Period,
         '/' => Token::ForwardSlash,
         ':' => Token::Colon,
