@@ -2,28 +2,9 @@
 source: src/lexer.rs
 input_file: src/test_data/lexer/identifiers.txt
 ---
-Ok(LexedFile(
-  file_name: "identifiers.txt",
-  token_spans: [
-    (Identifier("a"), SimpleSpan(
-      start: 0,
-      end: 1,
-      context: (),
-    )),
-    (Identifier("b2"), SimpleSpan(
-      start: 2,
-      end: 4,
-      context: (),
-    )),
-    (Identifier("c_"), SimpleSpan(
-      start: 5,
-      end: 7,
-      context: (),
-    )),
-    (Identifier("d_5"), SimpleSpan(
-      start: 8,
-      end: 11,
-      context: (),
-    )),
-  ],
-))
+[
+    "Identifier(\"a\")",
+    "Identifier(\"b2\")",
+    "Identifier(\"c_\")",
+    "Identifier(\"d_5\")",
+]

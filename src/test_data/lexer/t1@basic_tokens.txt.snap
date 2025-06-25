@@ -2,168 +2,37 @@
 source: src/lexer.rs
 input_file: src/test_data/lexer/basic_tokens.txt
 ---
-Ok(LexedFile(
-  file_name: "basic_tokens.txt",
-  token_spans: [
-    (SquareBracketLeft, SimpleSpan(
-      start: 0,
-      end: 1,
-      context: (),
-    )),
-    (SquareBracketRight, SimpleSpan(
-      start: 1,
-      end: 2,
-      context: (),
-    )),
-    (CurlyBracketLeft, SimpleSpan(
-      start: 3,
-      end: 4,
-      context: (),
-    )),
-    (CurlyBracketRight, SimpleSpan(
-      start: 5,
-      end: 6,
-      context: (),
-    )),
-    (ParenthesisLeft, SimpleSpan(
-      start: 7,
-      end: 8,
-      context: (),
-    )),
-    (ParenthesisRight, SimpleSpan(
-      start: 8,
-      end: 9,
-      context: (),
-    )),
-    (Minus, SimpleSpan(
-      start: 10,
-      end: 11,
-      context: (),
-    )),
-    (ExclamationMark, SimpleSpan(
-      start: 11,
-      end: 12,
-      context: (),
-    )),
-    (Ampersand, SimpleSpan(
-      start: 13,
-      end: 14,
-      context: (),
-    )),
-    (EqualSign, SimpleSpan(
-      start: 15,
-      end: 16,
-      context: (),
-    )),
-    (Comma, SimpleSpan(
-      start: 17,
-      end: 18,
-      context: (),
-    )),
-    (Semicolon, SimpleSpan(
-      start: 19,
-      end: 20,
-      context: (),
-    )),
-    (Colon, SimpleSpan(
-      start: 21,
-      end: 22,
-      context: (),
-    )),
-    (QuestionMark, SimpleSpan(
-      start: 23,
-      end: 24,
-      context: (),
-    )),
-    (ExclamationMark, SimpleSpan(
-      start: 25,
-      end: 26,
-      context: (),
-    )),
-    (PlusSign, SimpleSpan(
-      start: 28,
-      end: 29,
-      context: (),
-    )),
-    (Minus, SimpleSpan(
-      start: 29,
-      end: 30,
-      context: (),
-    )),
-    (Asterisk, SimpleSpan(
-      start: 31,
-      end: 32,
-      context: (),
-    )),
-    (AtSign, SimpleSpan(
-      start: 32,
-      end: 33,
-      context: (),
-    )),
-    (VerticalBar, SimpleSpan(
-      start: 33,
-      end: 34,
-      context: (),
-    )),
-    (ForwardSlash, SimpleSpan(
-      start: 35,
-      end: 36,
-      context: (),
-    )),
-    (QuotationMark, SimpleSpan(
-      start: 38,
-      end: 39,
-      context: (),
-    )),
-    (Octothorpe, SimpleSpan(
-      start: 39,
-      end: 40,
-      context: (),
-    )),
-    (PercentSign, SimpleSpan(
-      start: 40,
-      end: 41,
-      context: (),
-    )),
-    (Apostrophe, SimpleSpan(
-      start: 42,
-      end: 43,
-      context: (),
-    )),
-    (Period, SimpleSpan(
-      start: 43,
-      end: 44,
-      context: (),
-    )),
-    (Semicolon, SimpleSpan(
-      start: 44,
-      end: 45,
-      context: (),
-    )),
-    (LessThanSign, SimpleSpan(
-      start: 45,
-      end: 46,
-      context: (),
-    )),
-    (EqualSign, SimpleSpan(
-      start: 47,
-      end: 48,
-      context: (),
-    )),
-    (GreaterThanSign, SimpleSpan(
-      start: 49,
-      end: 50,
-      context: (),
-    )),
-    (Underscore, SimpleSpan(
-      start: 53,
-      end: 54,
-      context: (),
-    )),
-    (VerticalBar, SimpleSpan(
-      start: 55,
-      end: 56,
-      context: (),
-    )),
-  ],
-))
+[
+    "SquareBracketLeft",
+    "SquareBracketRight",
+    "CurlyBracketLeft",
+    "CurlyBracketRight",
+    "ParenthesisLeft",
+    "ParenthesisRight",
+    "Minus",
+    "ExclamationMark",
+    "Ampersand",
+    "EqualSign",
+    "Comma",
+    "Semicolon",
+    "Colon",
+    "QuestionMark",
+    "ExclamationMark",
+    "PlusSign",
+    "Minus",
+    "Asterisk",
+    "AtSign",
+    "VerticalBar",
+    "ForwardSlash",
+    "QuotationMark",
+    "Octothorpe",
+    "PercentSign",
+    "Apostrophe",
+    "Period",
+    "Semicolon",
+    "LessThanSign",
+    "EqualSign",
+    "GreaterThanSign",
+    "Underscore",
+    "VerticalBar",
+]

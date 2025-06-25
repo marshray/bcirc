@@ -26,20 +26,20 @@
 #![allow(unreachable_code)] //? TODO for development
 #![allow(clippy::needless_lifetimes, clippy::let_and_return)] //? TODO for development
 
-use std::collections;
-
 use anyhow::{Context, Result, anyhow};
 use chumsky::{
     combinator::To,
     error::{RichPattern, RichReason},
     prelude::*,
 };
+use num_bigint::BigInt;
 use self_cell::self_cell;
-//? use serde::{Deserialize, Serialize};
 use serde::Serialize;
-//? use thiserror::Error;
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+use crate::data_repr::Integer;
+
+//#[derive(PartialOrd, Ord, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 #[derive(serde::Serialize)]
 pub enum Token<'src> {
     WhitespaceOrComment,
@@ -79,7 +79,6 @@ pub enum Token<'src> {
     VerticalBar,
     CurlyBracketRight,
     // Not using "tilde",
-
     /// Should produce an error
     InternalError,
 }
@@ -87,6 +86,52 @@ pub enum Token<'src> {
 use crate::{file_content::FileContent, values::*};
 
 type LexExtraErr<'src> = extra::Err<Rich<'src, char>>;
+
+fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
+    let p = one_of("01").then(one_of("01_").repeated().to_slice());
+
+    p.map(|(ch0, s): (char, &'src str)| {
+        let mut i = Integer::from(0);
+        let is_negative = false; //? TODO
+
+        let signed_one = if is_negative {
+            Integer::negative_one()
+        } else {
+            Integer::one()
+        };
+
+        for ch in std::iter::once(ch0).chain(s.chars()) {
+            if ch != '_' {
+                i.double_assign();
+                if ch == '1' {
+                    i += &signed_one;
+                } else {
+                    debug_assert_eq!(ch, '0');
+                }
+            }
+        }
+
+        Token::IntegerLiteral(i)
+    })
+}
+
+fn lit_int<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
+    let base2 = lit_int_base_2();
+
+    let base10 = just('\'').ignore_then(text::int(10).map_with(|s: &str, _e| {
+        let i: i64 = s.parse().unwrap();
+        let integer_value = Integer::I64(i);
+        Token::IntegerLiteral(integer_value)
+    }));
+
+    let base16 = text::int(16).map_with(|s: &str, _e| {
+        let i: i64 = s.parse().unwrap();
+        let integer_value = Integer::I64(i);
+        Token::IntegerLiteral(integer_value)
+    });
+
+    base2.or(base10).or(base16)
+}
 
 fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>, LexExtraErr<'src>>
 {
@@ -109,40 +154,39 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
     //     .padded();
     // Single-character marks
 
-    let single_char_mark =
-        one_of("!\"#%&'()*+,-./:;<=>?@[]_{|}").map(|ch| match ch {
-            '!' => Token::ExclamationMark,
-            '"' => Token::QuotationMark,
-            '#' => Token::Octothorpe,
-            '%' => Token::PercentSign,
-            '&' => Token::Ampersand,
-            '\'' => Token::Apostrophe,
-            '(' => Token::ParenthesisLeft,
-            ')' => Token::ParenthesisRight,
-            '*' => Token::Asterisk,
-            '+' => Token::PlusSign,
-            ',' => Token::Comma,
-            '-' => Token::Minus,
-            '.' => Token::Period,
-            '/' => Token::ForwardSlash,
-            ':' => Token::Colon,
-            ';' => Token::Semicolon,
-            '<' => Token::LessThanSign,
-            '=' => Token::EqualSign,
-            '>' => Token::GreaterThanSign,
-            '?' => Token::QuestionMark,
-            '@' => Token::AtSign,
-            '[' => Token::SquareBracketLeft,
-            ']' => Token::SquareBracketRight,
-            '_' => Token::Underscore,
-            '{' => Token::CurlyBracketLeft,
-            '|' => Token::VerticalBar,
-            '}' => Token::CurlyBracketRight,
-            _ => {
-                debug_assert_eq!(ch, '!');
-                Token::InternalError
-            }
-        });
+    let single_char_mark = one_of("!\"#%&'()*+,-./:;<=>?@[]_{|}").map(|ch| match ch {
+        '!' => Token::ExclamationMark,
+        '"' => Token::QuotationMark,
+        '#' => Token::Octothorpe,
+        '%' => Token::PercentSign,
+        '&' => Token::Ampersand,
+        '\'' => Token::Apostrophe,
+        '(' => Token::ParenthesisLeft,
+        ')' => Token::ParenthesisRight,
+        '*' => Token::Asterisk,
+        '+' => Token::PlusSign,
+        ',' => Token::Comma,
+        '-' => Token::Minus,
+        '.' => Token::Period,
+        '/' => Token::ForwardSlash,
+        ':' => Token::Colon,
+        ';' => Token::Semicolon,
+        '<' => Token::LessThanSign,
+        '=' => Token::EqualSign,
+        '>' => Token::GreaterThanSign,
+        '?' => Token::QuestionMark,
+        '@' => Token::AtSign,
+        '[' => Token::SquareBracketLeft,
+        ']' => Token::SquareBracketRight,
+        '_' => Token::Underscore,
+        '{' => Token::CurlyBracketLeft,
+        '|' => Token::VerticalBar,
+        '}' => Token::CurlyBracketRight,
+        _ => {
+            debug_assert_eq!(ch, '!');
+            Token::InternalError
+        }
+    });
 
     let forward_slash = just('/')
         .then_ignore(just('*').not().rewind())
@@ -151,19 +195,13 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
     let identifier =
         text::ascii::ident::<'src, &'src str, LexExtraErr<'src>>().map(Token::Identifier);
 
-    let int_literal = text::int(10).map(|s: &str| {
-        let i: i128 = s.parse().unwrap();
-        let integer_value = Integer::I128(i);
-        Token::IntegerLiteral(integer_value)
-    });
-
     let lexeme = whitespace
         .or(line_comment)
         .or(block_comment)
         .or(forward_slash)
         .or(single_char_mark)
         .or(identifier)
-        .or(int_literal);
+        .or(lit_int());
 
     let lexeme = lexeme
         .map_with(|tok, e| (tok, e.span()))
@@ -174,9 +212,8 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
     lexeme.collect()
 }
 
-fn lex_failure_to_anyhow_error<'src>(errs: Vec<Rich<'src, char>>, src: &'src str) -> anyhow::Error {
+fn lex_failure_to_anyhow_error<'src>(src: &'src str, errs: Vec<Rich<'src, char>>) -> anyhow::Error {
     anyhow!("msg: {errs:?}")
-
     /*
     let strs = errs
         .iter()
@@ -192,10 +229,10 @@ fn lex_failure_to_anyhow_error<'src>(errs: Vec<Rich<'src, char>>, src: &'src str
             err.found()                                                 //?
                 .map(|c| c.to_string())                                 //?
                 .unwrap_or_else(|| "end of input".to_string()),         //?
-            *err.span(),                                                                                       //?
+            *err.span(),                                                //?
         );
     let extra_labels =
-        err.contexts()                                            //?
+        err.contexts()                                                  //?
             .map(|(l, s)| (format!("while parsing this {l}"), *s));
 
     anyhow!("msg: {msg}\nlabel: {label}\nextra_labels: {extra_labels}")
@@ -203,6 +240,7 @@ fn lex_failure_to_anyhow_error<'src>(errs: Vec<Rich<'src, char>>, src: &'src str
 }
 
 type VecTokensSpans<'src> = Vec<(Token<'src>, SimpleSpan)>;
+
 type ResultVecTokensSpans<'src> = anyhow::Result<VecTokensSpans<'src>>;
 
 fn lex_str<'src>(src: &'src str) -> ResultVecTokensSpans<'src> {
@@ -210,7 +248,7 @@ fn lex_str<'src>(src: &'src str) -> ResultVecTokensSpans<'src> {
 
     let r: Result<Vec<(Token<'_>, SimpleSpan)>, anyhow::Error> = parse_result
         .into_result()
-        .map_err(|errs: Vec<Rich<'src, char>>| lex_failure_to_anyhow_error(errs, src));
+        .map_err(|errs: Vec<Rich<'src, char>>| lex_failure_to_anyhow_error(src, errs));
 
     r
 }
@@ -227,7 +265,23 @@ self_cell!(
         dependent: VecTokensSpans,
     }
 );
+impl LexedFile {
+    /// Returns the file [`Path`](std::path::Path).
+    pub fn path(&self) -> &std::path::Path {
+        self.borrow_owner().path()
+    }
 
+    /// Returns the [`file_name`](std::path::Path::file_name) (converted with
+    /// [`to_string_lossy()`](std::path::Path::to_string_lossy)), or an empty [`String`].
+    pub fn filename_or_default(&self) -> String {
+        self.borrow_owner().filename_or_default()
+    }
+
+    pub fn iter_tokens<'src>(&'src self) -> impl Iterator<Item = &'src Token<'src>> {
+        let tokens_spans: &Vec<(Token<'src>, SimpleSpan)> = self.borrow_dependent();
+        tokens_spans.iter().map(|(t, _s)| t)
+    }
+}
 impl serde::Serialize for LexedFile {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -257,6 +311,8 @@ pub fn lex_file(file_path: &std::path::Path) -> Result<LexedFile> {
 
 #[cfg(test)]
 mod t {
+    use insta::{assert_compact_debug_snapshot as iacds, assert_debug_snapshot as iads};
+
     use super::{ResultVecTokensSpans, lex_file};
 
     #[test]
@@ -270,7 +326,22 @@ mod t {
              -> anyhow::Result<()> {
                 let lexing_result = super::lex_file(file_path).map_err(|e| e.to_string());
 
-                insta::assert_ron_snapshot!(lexing_result);
+                match &lexing_result {
+                    Ok(lexed_file) => {
+                        if lexed_file.filename_or_default() == "comments.txt" {
+                            insta::assert_ron_snapshot!(lexing_result);
+                        } else {
+                            let mut tokens = lexed_file
+                                .iter_tokens()
+                                .map(|t| format!("{t:?}"))
+                                .collect::<Vec<_>>();
+                            iads!(tokens);
+                        }
+                    }
+                    Err(error_string) => {
+                        insta::assert_ron_snapshot!(lexing_result);
+                    }
+                }
 
                 Ok(())
             },

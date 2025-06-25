@@ -2,43 +2,37 @@
 source: src/lexer.rs
 input_file: src/test_data/lexer/integer_literals.txt
 ---
-Ok(LexedFile(
-  file_name: "integer_literals.txt",
-  token_spans: [
-    (IntegerLiteral(I128(0)), SimpleSpan(
-      start: 0,
-      end: 1,
-      context: (),
-    )),
-    (IntegerLiteral(I128(1)), SimpleSpan(
-      start: 2,
-      end: 3,
-      context: (),
-    )),
-    (IntegerLiteral(I128(69)), SimpleSpan(
-      start: 4,
-      end: 6,
-      context: (),
-    )),
-    (IntegerLiteral(I128(420)), SimpleSpan(
-      start: 7,
-      end: 10,
-      context: (),
-    )),
-    (IntegerLiteral(I128(170141183460469231731687303715884105727)), SimpleSpan(
-      start: 12,
-      end: 51,
-      context: (),
-    )),
-    (Minus, SimpleSpan(
-      start: 52,
-      end: 53,
-      context: (),
-    )),
-    (IntegerLiteral(I128(141183460469231731687303715884105728)), SimpleSpan(
-      start: 53,
-      end: 89,
-      context: (),
-    )),
-  ],
-))
+[
+    "Identifier(\"begin_should_be_0\")",
+    "IntegerLiteral(I64(0))",
+    "IntegerLiteral(I64(0))",
+    "IntegerLiteral(I64(0))",
+    "IntegerLiteral(I64(0))",
+    "IntegerLiteral(I64(0))",
+    "Identifier(\"end_should_be_0\")",
+    "Identifier(\"begin_should_be_1\")",
+    "IntegerLiteral(I64(1))",
+    "IntegerLiteral(I64(1))",
+    "IntegerLiteral(I64(1))",
+    "IntegerLiteral(I64(1))",
+    "IntegerLiteral(I64(1))",
+    "IntegerLiteral(I64(1))",
+    "Identifier(\"end_should_be_1\")",
+    "Identifier(\"begin_should_be_2\")",
+    "IntegerLiteral(I64(2))",
+    "IntegerLiteral(I64(2))",
+    "IntegerLiteral(I64(2))",
+    "IntegerLiteral(I64(2))",
+    "IntegerLiteral(I64(2))",
+    "Identifier(\"end_should_be_2\")",
+    "Identifier(\"should_be_pow2_62\")",
+    "IntegerLiteral(I64(4611686018427387904))",
+    "Identifier(\"should_be_pow2_63_minus_1_AKA_i64_MAX\")",
+    "IntegerLiteral(I64(9223372036854775807))",
+    "Identifier(\"should_be_pow2_63\")",
+    "IntegerLiteral(BigInt(9223372036854775808))",
+    "Identifier(\"should_be_pow2_64_minus_1\")",
+    "IntegerLiteral(BigInt(18446744073709551615))",
+    "Identifier(\"should_be_pow2_64\")",
+    "IntegerLiteral(BigInt(18446744073709551616))",
+]

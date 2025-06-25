@@ -17,6 +17,26 @@ chumsky = { version = "0.10.1", default-features = false, features = [
     "nightly",
     "std",
     "serde",
+    "regex",
+    # "stacker",
+    # "memoization",
+    # "extension",
+    # "sync",
+    # "pratt",
+    # "unstable",
+    # "lexical-numbers",
+    # "either",
+    # "bytes",
+    # "spin",
+
+] }
+const-default = { version = "1.0", default-features = false, features = [
+    "derive",
+    "std",
+    "alloc",
+    "derive",
+    "unstable",
+    "enable-atomics",
 ] }
 # deku = "0.16.0"
 either = { version = "1.15.0", default-features = false, features = [] }
@@ -25,7 +45,32 @@ memmap2 = "0.9.5"
 # ron = "0.10.1"
 self_cell = "1.2.0"
 serde = { version = "1.0.188", features = ["derive"] }
+static_assertions = "1.1.0"
 thiserror = "2.0.12"
+
+#-------------- rust-num project
+
+# 0.4.6 https://github.com/rust-num/num-bigint/tree/a25836ec6c341d1aa40c97335842f330b6a62911
+num-bigint = { version = "0.4.6", default-features = false, features = [
+    "std",
+    # "arbitrary",
+    # "quickcheck",
+    # "rand",
+    "serde",
+] }
+
+# #-------------- RustCrypto project
+#
+# # 0.6.1  https://github.com/RustCrypto/crypto-bigint/tree/659ba4d7df97e47848d754b430446028af200bc3
+# crypto-bigint = { version = "0.6.1", default-features = false, features = [
+#     # "der",
+#     # "hybrid-array",
+#     # "num-trait",
+#     # "rand_core",
+#     # "rlp",
+#     # "serdect",
+#     # "zeroize",
+# ] }
 
 #====================================== Dev-Dependencies ==========================================|
 [dev-dependencies]
