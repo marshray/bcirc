@@ -91,22 +91,22 @@ base10_should_be_pow2_62_eq_4611686018427387904
 4611686018427387904
 +4611686018427387904
 
-base10_should_be_pow2_63_minus_1_AKA_i64_MAX
+base10_should_be_pow2_63_minus_1_AKA_i64_MAX_eq_9223372036854775807
 9223372036854775807
 
-base10_should_be_pow2_63
+base10_should_be_pow2_63_eq_9223372036854775808
 9223372036854775808
 
-base10_should_be_pow2_64_minus_1
+base10_should_be_pow2_64_minus_1_eq_18446744073709551615
 18446744073709551615
 
-base10_should_be_pow2_64
+base10_should_be_pow2_64_eq_18446744073709551616
 18446744073709551616
 
-base10_should_be_pow2_127_minus_1_AKA_i128_MAX
+base10_should_be_pow2_127_minus_1_AKA_i128_MAX_eq_170141183460469231731687303715884105727
 170141183460469231731687303715884105727
 
-base10_should_be_pow2_127
+base10_should_be_pow2_127_eq_170141183460469231731687303715884105728
 170141183460469231731687303715884105728
 +170141183460469231731687303715884105728
 
@@ -127,9 +127,72 @@ base10_should_be_neg_pow2_127_AKA_i128_MIN
 
 //============================ hex
 
-/*
-"0   // hex zero
-"ff  // hex '255
-// */
+// hex 0
+base16_begin_should_be_0
+'x0
+'x0_
+'x_0
+'x0_0
+'x00000000_00000000
+'x00000000_00000000_00000000_00000000__00000000_00000000_00000000_00000000
+base16_end_should_be_0
+
+// hex 1
+base16_begin_should_be_1
+'x1
+'x1_
+'x_1
+'x01
+'x0_1
+'x00000000_00000001
+'x00000000_00000000_00000000_00000000__00000000_00000000_00000000_00000001
+base16_end_should_be_1
+
+// hex 2...15
+base16_begin_should_be_2 'x2 'x02
+base16_begin_should_be_3 'x3
+base16_begin_should_be_4 'x4
+base16_begin_should_be_5 'x5
+base16_begin_should_be_6 'x6
+base16_begin_should_be_7 'x7
+base16_begin_should_be_8 'x8
+base16_begin_should_be_9 'x__9
+base16_begin_should_be_10 'xa  'xA
+base16_begin_should_be_11 'xb  'xB
+base16_begin_should_be_12 'xc_ 'xC
+base16_begin_should_be_13 'xd  'xD
+base16_begin_should_be_14 'xe  'xE_
+base16_begin_should_be_15 'x0f 'x_F_
+
+// hex 16
+base16_begin_should_be_16
+'x10
+'x10_
+'x_10
+'x1_0
+'x_0000_0010
+'x_0000_0000__0000_0010
+'x_0000_0000__0000_0010
+base16_end_should_be_16
+
+// hex 2^62
+base16_should_be_pow2_62_eq_4611686018427387904
+'x_4000_0000__0000_0000
+
+// hex 2^63 - 1
+base16_should_be_pow2_63_minus_1_AKA_i64_MAX
+'x_7fff_ffff__ffff_ffff
+
+// hex 2^63
+base16_should_be_pow2_63_eq_9223372036854775808
+'x_8000_0000__0000_0000
+
+// hex 2^64 - 1
+base16_should_be_pow2_64_minus_1_eq_18446744073709551615
+'x_ffff_ffff__ffff_ffff
+
+// hex 2^64
+base16_should_be_pow2_64_eq_18446744073709551616
+'x_1__0000_0000__0000_0000
 
 //============================

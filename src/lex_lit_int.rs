@@ -40,37 +40,8 @@ use crate::{
     bits::*, file_content::FileContent, integer::Integer, lexer::LexExtraErr, token::Token,
 };
 
-pub(crate) fn lit_int<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    lit_int_base_2().or(lit_int_base_10())
-}
-
-fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    // The "'b" prefix is ignored
-    let p = just("'b");
-    let p = p.ignore_then(just('_').repeated());
-
-    // This part is parsed to an integer.
-    let q = one_of("01").then(one_of("01_").repeated());
-    let q = q.to_slice();
-    let q = q.map(|s: &'src str| {
-        let mut i = Integer::from(0);
-        for ch in s.chars() {
-            if ch != '_' {
-                i.double_assign();
-                if ch == '1' {
-                    i += 1;
-                } else {
-                    debug_assert_eq!(ch, '0');
-                }
-            }
-        }
-
-        Token::IntegerLiteral(i)
-    });
-    p.ignore_then(q)
-}
-
-fn lit_int_base_10<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
+pub(crate) fn lit_int_base10<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>>
+{
     let p = one_of("+-").or_not();
     let p = p.then(
         one_of("0123456789")
@@ -104,4 +75,67 @@ fn lit_int_base_10<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtra
 
         Token::IntegerLiteral(i)
     })
+}
+
+pub(crate) fn lit_int_base2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>>
+{
+    // The "'b" prefix is ignored
+    let p = just("'b");
+    let p = p.ignore_then(just('_').repeated());
+
+    // This part is parsed to an integer.
+    let q = one_of("01").then(one_of("01_").repeated());
+    let q = q.to_slice();
+    let q = q.map(|s: &'src str| {
+        let mut i = Integer::from(0);
+        for ch in s.chars() {
+            if ch != '_' {
+                i.double_assign();
+                if ch == '1' {
+                    i += 1;
+                } else {
+                    debug_assert_eq!(ch, '0');
+                }
+            }
+        }
+
+        Token::IntegerLiteral(i)
+    });
+    p.ignore_then(q)
+}
+
+pub(crate) fn lit_int_base16<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>>
+{
+    // The "'x prefix is ignored
+    let p = just("'x");
+    let p = p.ignore_then(just('_').repeated());
+
+    // This part is parsed to an integer.
+    let q = one_of("0123456789ABCDEFabcdef").then(one_of("0123456789ABCDEFabcdef_").repeated());
+    let q = q.to_slice();
+    let q = q.map(|s: &'src str| {
+        let mut i = Integer::from(0);
+        for ch in s.chars() {
+            if ch != '_' {
+                i *= 16_i64;
+                match ch {
+                    '0'..='9' => {
+                        i += (ch as isize - '0' as isize) as i64;
+                    }
+                    'A'..='F' => {
+                        i += (ch as isize - 'A' as isize) as i64 + 10;
+                    }
+                    'a'..='f' => {
+                        i += (ch as isize - 'a' as isize) as i64 + 10;
+                    }
+                    _ => {
+                        debug_assert_eq!(ch, '_');
+                    }
+                }
+            }
+        }
+
+        Token::IntegerLiteral(i)
+    });
+    p.ignore_then(q)
 }

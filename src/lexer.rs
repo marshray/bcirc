@@ -36,9 +36,7 @@ use num_bigint::BigInt;
 use self_cell::self_cell;
 use serde::Serialize;
 
-use crate::{
-    bits::*, file_content::FileContent, integer::Integer, lex_lit_int::lit_int, token::Token,
-};
+use crate::{bits::*, file_content::FileContent, integer::Integer, token::Token};
 
 pub(crate) type LexExtraErr<'src> = extra::Err<Rich<'src, char>>;
 
@@ -110,7 +108,9 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
         .or(forward_slash)
         .or(single_char_mark)
         .or(identifier)
-        .or(lit_int());
+        .or(crate::lex_lit_int::lit_int_base10())
+        .or(crate::lex_lit_int::lit_int_base16())
+        .or(crate::lex_lit_int::lit_int_base2());
 
     let lexeme = lexeme
         .map_with(|tok, e| (tok, e.span()))
