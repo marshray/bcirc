@@ -39,7 +39,7 @@
 use crate::{
     integer::Integer,
     file_content::FileContent,
-    values::*,
+    bits::*,
 };
 
 //#[derive(PartialOrd, Ord, Hash)]

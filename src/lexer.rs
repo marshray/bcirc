@@ -40,7 +40,7 @@ use crate::{
     file_content::FileContent,
     integer::Integer,
     token::Token,
-    values::*,
+    bits::*,
     lex_lit_int::lit_int,
 };
 

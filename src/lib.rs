@@ -30,6 +30,7 @@ mod ast;
 mod config;
 pub use crate::config::EvaluatorConfig;
 
+mod bits;
 mod file_content;
 mod integer;
 mod lex_lit_int;
@@ -38,7 +39,6 @@ mod parser;
 mod sources;
 mod token;
 mod util;
-mod values;
 
 #[cfg(test)]
 mod test_util;

@@ -31,7 +31,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::values::Bits;
+use crate::bits::Bits;
 use crate::integer::Integer;
 
 #[derive(Debug, Serialize, Deserialize)]
