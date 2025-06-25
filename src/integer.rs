@@ -76,6 +76,44 @@ impl Integer {
             }
         }
     }
+
+    /// Adds into [`self`] the [`i64`] value.
+    pub fn add_assign_i64(&mut self, rhs: i64) {
+        use std::ops::AddAssign;
+        match self {
+            self_ @ &mut Integer::I64(self_i64) => {
+                *self_ = if let Some(sum_i64) = self_i64.checked_add(rhs) {
+                    Integer::I64(sum_i64)
+                } else {
+                    let mut self_bi = BigInt::from(self_i64);
+                    self_bi.add_assign(rhs);
+                    Integer::BigInt(self_bi)
+                };
+            }
+            Integer::BigInt(self_bi) => {
+                self_bi.add_assign(rhs);
+            }
+        }
+    }
+
+    /// Multiplies into [`self`] the [`i64`] value.
+    pub fn mul_assign_i64(&mut self, rhs: i64) {
+        use std::ops::MulAssign;
+        match self {
+            self_ @ &mut Integer::I64(self_i64) => {
+                *self_ = if let Some(product_i64) = self_i64.checked_mul(rhs) {
+                    Integer::I64(product_i64)
+                } else {
+                    let mut self_bi = BigInt::from(self_i64);
+                    self_bi.mul_assign(rhs);
+                    Integer::BigInt(self_bi)
+                };
+            }
+            Integer::BigInt(self_bi) => {
+                self_bi.mul_assign(rhs);
+            }
+        }
+    }
 }
 
 impl ConstDefault for Integer {
@@ -113,6 +151,13 @@ impl std::cmp::PartialEq for Integer {
 
 impl std::cmp::Eq for Integer {}
 
+impl std::ops::AddAssign<i64> for Integer {
+    #[inline]
+    fn add_assign(&mut self, rhs: i64) {
+        self.add_assign_i64(rhs);
+    }
+}
+
 impl std::ops::AddAssign<&Self> for Integer {
     fn add_assign(&mut self, rhs: &Self) {
         match (self, rhs) {
@@ -140,12 +185,19 @@ impl std::ops::AddAssign<&Self> for Integer {
     }
 }
 
+impl std::ops::MulAssign<i64> for Integer {
+    #[inline]
+    fn mul_assign(&mut self, rhs: i64) {
+        self.mul_assign_i64(rhs);
+    }
+}
+
 impl std::ops::MulAssign<&Self> for Integer {
     fn mul_assign(&mut self, rhs: &Self) {
         match (self, rhs) {
             (self_ @ &mut Integer::I64(self_i64), &Integer::I64(i2)) => {
-                *self_ = if let Some(sum_i64) = self_i64.checked_mul(i2) {
-                    Integer::I64(sum_i64)
+                *self_ = if let Some(product_i64) = self_i64.checked_mul(i2) {
+                    Integer::I64(product_i64)
                 } else {
                     let mut self_bi = BigInt::from(self_i64);
                     self_bi.mul_assign(i2);

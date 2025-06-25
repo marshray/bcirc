@@ -67,13 +67,13 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
     //     .padded();
     // Single-character marks
 
-    let single_char_mark = one_of("!\"#%&'()*+,-./:;<=>?@[]_{|}").map(|ch| match ch {
+    let single_char_mark = one_of("!\"#%&()*+,-./:;<=>?@[]_{|}").map(|ch| match ch {
         '!' => Token::ExclamationMark,
         '"' => Token::QuotationMark,
         '#' => Token::Octothorpe,
         '%' => Token::PercentSign,
         '&' => Token::Ampersand,
-        '\'' => Token::Apostrophe,
+        // '\'' => Token::Apostrophe, // introduces IntegerLiteral
         '(' => Token::ParenthesisLeft,
         ')' => Token::ParenthesisRight,
         '*' => Token::Asterisk,
@@ -120,6 +120,7 @@ fn lexer<'src>() -> impl Parser<'src, &'src str, Vec<(Token<'src>, SimpleSpan)>,
         .map_with(|tok, e| (tok, e.span()))
         .map(|pr| (!matches!(pr.0, Token::WhitespaceOrComment)).then_some(pr))
         .repeated()
+        //.end()
         .flatten();
 
     lexeme.collect()

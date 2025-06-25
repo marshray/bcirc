@@ -45,27 +45,21 @@ use crate::{
 };
 
 pub(crate) fn lit_int<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    let base2 = lit_int_base_2();
-
-    let base10 = just('\'').ignore_then(text::int(10).map_with(|s: &str, _e| {
-        let i: i64 = s.parse().unwrap();
-        let integer_value = Integer::I64(i);
-        Token::IntegerLiteral(integer_value)
-    }));
-
-    let base16 = text::int(16).map_with(|s: &str, _e| {
-        let i: i64 = s.parse().unwrap();
-        let integer_value = Integer::I64(i);
-        Token::IntegerLiteral(integer_value)
-    });
-
-    base2.or(base10).or(base16)
+    lit_int_base_2()
+    .or(lit_int_base_10())    
 }
 
 fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
-    let p = one_of("01").then(one_of("01_").repeated().to_slice());
+    // The "'b" prefix is ignored
+    let p = just("'b");
+    let p = p.ignore_then(just('_').repeated());
 
-    p.map(|(ch0, s): (char, &'src str)| {
+    // This part is parsed to an integer.
+    let q =
+        one_of("01")
+        .then(one_of("01_").repeated());
+    let q = q.to_slice();
+    let q = q.map(|s: &'src str| {
         let mut i = Integer::from(0);
         let is_negative = false; //? TODO
 
@@ -75,7 +69,7 @@ fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraE
             Integer::one()
         };
 
-        for ch in std::iter::once(ch0).chain(s.chars()) {
+        for ch in s.chars() {
             if ch != '_' {
                 i.double_assign();
                 if ch == '1' {
@@ -83,6 +77,32 @@ fn lit_int_base_2<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraE
                 } else {
                     debug_assert_eq!(ch, '0');
                 }
+            }
+        }
+
+        Token::IntegerLiteral(i)
+    });
+    p.ignore_then(q)
+}
+
+fn lit_int_base_10<'src>() -> impl Parser<'src, &'src str, Token<'src>, LexExtraErr<'src>> {
+    let p =
+        one_of("0123456789")
+        .then(one_of("0123456789_").repeated())
+        .to_slice();
+
+    p.map(|s: &'src str| {
+        let is_negative = false; //? TODO
+
+        let ten: Integer = 10.into();
+        let signed_ten = if is_negative { Integer::from(-10_i8) } else { ten };
+
+        let mut i = Integer::from(0);
+        for ch in s.chars() {
+            if ch != '_' {
+                debug_assert!('0' <= ch && ch <= '9');
+                i *= 10_i64;
+                i += (ch as isize - '0' as isize) as i64;
             }
         }
 

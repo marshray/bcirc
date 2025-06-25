@@ -27,7 +27,6 @@ input_file: src/test_data/lexer/basic_tokens.txt
     "QuotationMark",
     "Octothorpe",
     "PercentSign",
-    "Apostrophe",
     "Period",
     "Semicolon",
     "LessThanSign",

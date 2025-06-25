@@ -58,7 +58,7 @@ pub enum Token<'src> {
     // Not using "dollar sign"
     PercentSign,
     Ampersand,
-    Apostrophe,
+    //Apostrophe, // introduces IntegerLiteral
     ParenthesisLeft,
     ParenthesisRight,
     Asterisk,

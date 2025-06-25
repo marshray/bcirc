@@ -50,7 +50,7 @@ Ok(LexedFile(
       end: 164,
       context: (),
     )),
-    (IntegerLiteral(I64(2)), SimpleSpan(
+    (IntegerLiteral(I64(10)), SimpleSpan(
       start: 171,
       end: 173,
       context: (),
